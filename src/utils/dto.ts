@@ -1,17 +1,18 @@
 import { Prisma } from '@prisma/client';
 import { ApiError } from './apiError';
 import { ZodError } from 'zod'
+import { API_STATUS_CODE } from './enum';
 
 export type FormattedResponse = {
-    status: number,
+    status_code: string,
     message: string,
     data: any
 }
 
 export class Dto {
-    dataToResp(status: number, message: string, data: any): FormattedResponse {
+    dataToResp(status_code: string, message: string, data: any): FormattedResponse {
         return {
-            status: status,
+            status_code: status_code,
             message: message,
             data: data
         };
@@ -25,7 +26,7 @@ export class Dto {
 
         if (err instanceof ZodError || (err as ZodError).name === 'ZodError') {
             console.log(`[${source}] Input error: ${err.message}`);
-            throw new ApiError(err.message, 3);
+            throw new ApiError(err.message, API_STATUS_CODE.INVALID_ARGUMENT);
         }
 
         if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -45,15 +46,15 @@ export class Dto {
                     errorMsg = `Error in database query`;
             }
 
-            throw new ApiError(errorMsg, 1);
+            throw new ApiError(errorMsg, API_STATUS_CODE.DATABASE_ERROR);
         }
 
         if (err instanceof Error) {
             console.log(`[${source}] Error: ${err.message}`);
-            throw new ApiError(`${err.message}`, 2);
+            throw new ApiError(`${err.message}`, API_STATUS_CODE.SYSTEM_ERROR);
         }
 
         console.log(`[${source}] Unknown Error: ${err.message}`);
-        throw new ApiError(`An unknown error occurred`, 99);
+        throw new ApiError(`An unknown error occurred`, API_STATUS_CODE.UNKNOWN_ERROR);
     }
 }

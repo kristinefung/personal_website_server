@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { Dto } from '../utils/dto';
 import { ApiError } from '../utils/apiError';
+import { API_STATUS_CODE } from '../utils/enum';
 
 const userService = new UserService();
 const dto = new Dto();
@@ -13,14 +14,14 @@ export class UserController {
             const createdUser = await userService.createUser(req.body);
 
             // Step 2: return success response
-            res.status(200).json(dto.dataToResp(0, "Success", { user: createdUser }));
+            res.status(200).json(dto.dataToResp(API_STATUS_CODE.SUCCESS, "Success", { user: createdUser }));
             return;
         } catch (err) {
             if (err instanceof ApiError) {
-                res.status(500).json(dto.dataToResp(err.status, err.message, {}));
+                res.status(500).json(dto.dataToResp(err.status_code, err.message, {}));
                 return;
             }
-            res.status(500).json(dto.dataToResp(-1, "Unknown error", {}));
+            res.status(500).json(dto.dataToResp(API_STATUS_CODE.UNKNOWN_ERROR, "Unknown error", {}));
             return;
 
         }

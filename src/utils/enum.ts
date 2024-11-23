@@ -1,3 +1,6 @@
+/************************************************************************
+ *                           User related
+ ************************************************************************/
 export enum USER_ROLE {
     ADMIN = 0,
     USER = 1,
@@ -12,4 +15,16 @@ export enum USER_STATUS {
     BANNED = 4, // Permanently banned
     LOCKED = 5, // Too many failed attempts, would store last user status
     DELETED = 6, // Account deleted, no longer accessible
+}
+
+/************************************************************************
+ *                           API related
+ ************************************************************************/
+export enum API_STATUS_CODE {
+    SUCCESS = "SUCCESS",
+    UNAUTHORIZED = "UNAUTHORIZED",
+    INVALID_ARGUMENT = "INVALID_ARGUMENT",
+    DATABASE_ERROR = "DATABASE_ERROR",
+    SYSTEM_ERROR = "SYSTEM_ERROR",
+    UNKNOWN_ERROR = "UNKNOWN_ERROR",
 }

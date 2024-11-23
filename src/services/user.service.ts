@@ -8,6 +8,7 @@ import { genRandomString } from '../utils/common';
 import { ResData } from '../utils/resData';
 
 import { USER_ROLE, USER_STATUS } from '../utils/enum';
+import { API_STATUS_CODE } from '../utils/enum';
 
 const sourceName = "UserService";
 
@@ -28,7 +29,7 @@ export class UserService {
             // Step 1: Check user email not existed in database
             const dbUser = await userRepo.getUserByEmail(user.email!)
             if (dbUser) {
-                throw new ApiError("User existed", 1);
+                throw new ApiError("User existed", API_STATUS_CODE.INVALID_ARGUMENT);
             }
 
             // Step 2: Hash user password
