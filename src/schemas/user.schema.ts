@@ -1,10 +1,5 @@
-import { ApiError } from '../utils/Err';
 import { z } from 'zod';
-import { Dto } from '../utils/dto';
 
-const dto = new Dto();
-
-const sourceName = "UserSchema";
 const hiddenWord = "********";
 
 class ValidationResult<T> {

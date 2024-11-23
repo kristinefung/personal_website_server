@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import * as Err from './Err';
 import { API_STATUS_CODE } from './enum';
+import * as Err from './Err';
 
 type FormattedResponse = {
     status_code: string,

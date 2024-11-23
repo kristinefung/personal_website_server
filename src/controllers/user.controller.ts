@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
+
 import { UserService } from '../services/user.service';
-import { Dto } from '../utils/dto';
 import { jsonResponse } from '../utils/jsonResponse';
 
 const userService = new UserService();
-const dto = new Dto();
 
 export class UserController {
     async createUser(req: Request, res: Response) {
