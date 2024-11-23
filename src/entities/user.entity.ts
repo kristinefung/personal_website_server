@@ -1,18 +1,6 @@
 import { z } from 'zod';
 
-const hiddenWord = "********";
-
-class ValidationResult<T> {
-    public success: boolean;
-    public data?: T;
-    public errors?: string[];
-
-    constructor(success: boolean, data?: T, errors?: string[]) {
-        this.success = success;
-        this.data = data;
-        this.errors = errors;
-    }
-}
+import { ValidationResult } from '../utils/validationResult';
 
 export class User {
     id?: number;
@@ -46,6 +34,8 @@ export class User {
     }
     // Method to convert the user object to a response format
     hideSensitive() {
+        const hiddenWord = "********";
+
         this.password = hiddenWord;
         this.password_salt = hiddenWord;
         return this;

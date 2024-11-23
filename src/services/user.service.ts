@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 
 import { UserRepository } from '../repositories/user.repository';
-import { User } from '../schemas/user.schema';
+import { User } from '../entities/user.entity';
 
-import { ApiError } from '../utils/Err';
+import { ApiError } from '../utils/err';
 import { genRandomString } from '../utils/common';
 import { USER_ROLE, USER_STATUS, API_STATUS_CODE } from '../utils/enum';
 
