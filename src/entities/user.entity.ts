@@ -32,7 +32,7 @@ export class User {
     }) {
         Object.assign(this, data);
     }
-    // Method to convert the user object to a response format
+
     hideSensitive() {
         const hiddenWord = "********";
 

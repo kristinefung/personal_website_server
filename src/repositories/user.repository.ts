@@ -1,4 +1,4 @@
-import prisma from '../prisma/prisma_client';
+import prisma from './prisma/prisma_client';
 import { User } from '../entities/user.entity';
 
 export class UserRepository {
