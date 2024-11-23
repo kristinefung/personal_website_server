@@ -47,4 +47,13 @@ export class UserController {
             return jsonResponse(res, {}, err);
         }
     }
+
+    async updateUserById(req: Request, res: Response) {
+        try {
+            const user = await userService.updateUserById(req.params, req.body);
+            return jsonResponse(res, { user: user }, null);
+        } catch (err) {
+            return jsonResponse(res, {}, err);
+        }
+    }
 }

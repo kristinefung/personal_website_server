@@ -66,4 +66,21 @@ export class UserService {
         const user = await userRepo.deleteUserById(userId);
         return user;
     }
+
+    async updateUserById(reqParams: any, reqJson: any): Promise<User | ApiError> {
+        // Step 0: Data validation
+        const userReq = new User(reqJson);
+        const validateResult = userReq.validateUpdateInput();
+        if (!validateResult.success) {
+            console.log(validateResult);
+            throw new ApiError(validateResult.errors?.[0] ?? "", API_STATUS_CODE.INVALID_ARGUMENT, 400);
+        }
+        let user = validateResult.data!;
+
+        // Step 1: Update user into database
+        const userId = parseInt(reqParams.id);
+        const userRes = await userRepo.updateUserById(userId, user);
+
+        return userRes.hideSensitive();
+    }
 }

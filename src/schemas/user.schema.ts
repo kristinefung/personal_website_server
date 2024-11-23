@@ -81,4 +81,39 @@ export class User {
         const validatedData = this;
         return new ValidationResult(true, validatedData);
     }
+
+    validateUpdateInput(): ValidationResult<User | undefined> {
+        // Step 1: Validate request body
+        const updateUserSchema = z.object({
+            name: z
+                .string()
+                .optional()
+                .nullable(),
+            email: z
+                .string()
+                .email("Invalid email address")
+                .optional()
+                .nullable(),
+            password: z
+                .string()
+                .optional()
+                .nullable(),
+        });
+
+        const result = updateUserSchema.safeParse(this);
+
+        // Step 2: If input invalid, return false
+        if (!result.success) {
+            const errors = result.error.errors.map(e => e.message);
+            return new ValidationResult(false, undefined, errors);
+        }
+
+        // Step 2: If input valid, return true
+        this.email = result.data.email || undefined;
+        this.name = result.data.name || undefined;
+        this.password = result.data.password || undefined;
+
+        const validatedData = this;
+        return new ValidationResult(true, validatedData);
+    }
 }

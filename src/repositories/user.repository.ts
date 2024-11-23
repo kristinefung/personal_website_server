@@ -51,4 +51,28 @@ export class UserRepository {
         });
         return null;
     }
+
+    async updateUserById(id: number, user: User): Promise<User> {
+        const updatedUser = await prisma.userModel.update({
+            where: {
+                id: id,
+                deleted: 0,
+            },
+            data: {
+                email: user.email || undefined,
+                name: user.name || undefined,
+                password: user.password || undefined,
+                password_salt: undefined,
+                role_id: user.role_id || undefined,
+                status_id: user.status_id || undefined,
+                created_at: undefined,
+                created_by: undefined,
+                updated_at: new Date(),
+                updated_by: user.updated_by || undefined,
+                deleted: undefined,
+            },
+        });
+
+        return new User(updatedUser);
+    }
 }
