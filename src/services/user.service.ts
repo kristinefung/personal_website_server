@@ -29,7 +29,7 @@ export class UserService {
             // Step 1: Check user email not existed in database
             const dbUser = await userRepo.getUserByEmail(user.email!)
             if (dbUser) {
-                throw new ApiError("User existed", API_STATUS_CODE.INVALID_ARGUMENT);
+                throw new ApiError("User existed", API_STATUS_CODE.INVALID_ARGUMENT, 400);
             }
 
             // Step 2: Hash user password
@@ -51,8 +51,18 @@ export class UserService {
         }
     }
 
-    async getUserById(id: number): Promise<User | null> {
-        return await userRepo.getUserById(id);
+    async getUserById(reqParams: any): Promise<User | ApiError> {
+        try {
+            const userId = parseInt(reqParams.id);
+            const user = await userRepo.getUserById(userId);
+            if (!user) {
+                throw new ApiError("User not existed", API_STATUS_CODE.INVALID_ARGUMENT, 400);
+            }
+            return resData.dataToResp(user);
+        }
+        catch (err: any) {
+            throw dto.dataToError(sourceName, err);
+        }
     }
 
     async getAllUsers(): Promise<User[]> {

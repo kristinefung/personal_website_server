@@ -45,10 +45,16 @@ export class UserRepository {
         }
     }
 
-    async getUserById(id: number): Promise<User | null> {
-        return await prisma.userModel.findUnique({
-            where: { id, deleted: 0 },
-        });
+    async getUserById(id: number): Promise<User | null | ApiError> {
+        try {
+            const user = await prisma.userModel.findUnique({
+                where: { id, deleted: 0 },
+            });
+            return user;
+        }
+        catch (err) {
+            throw dto.dataToError(sourceName, err);
+        }
     }
 
     async getAllUsers(): Promise<User[]> {

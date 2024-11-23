@@ -26,7 +26,7 @@ export class Dto {
 
         if (err instanceof ZodError || (err as ZodError).name === 'ZodError') {
             console.log(`[${source}] Input error: ${err.message}`);
-            throw new ApiError(err.message, API_STATUS_CODE.INVALID_ARGUMENT);
+            throw new ApiError(err.message, API_STATUS_CODE.INVALID_ARGUMENT, 400);
         }
 
         if (err instanceof Prisma.PrismaClientKnownRequestError) {
@@ -46,15 +46,15 @@ export class Dto {
                     errorMsg = `Error in database query`;
             }
 
-            throw new ApiError(errorMsg, API_STATUS_CODE.DATABASE_ERROR);
+            throw new ApiError(errorMsg, API_STATUS_CODE.DATABASE_ERROR, 500);
         }
 
         if (err instanceof Error) {
             console.log(`[${source}] Error: ${err.message}`);
-            throw new ApiError(`${err.message}`, API_STATUS_CODE.SYSTEM_ERROR);
+            throw new ApiError(`${err.message}`, API_STATUS_CODE.SYSTEM_ERROR, 500);
         }
 
         console.log(`[${source}] Unknown Error: ${err.message}`);
-        throw new ApiError(`An unknown error occurred`, API_STATUS_CODE.UNKNOWN_ERROR);
+        throw new ApiError(`An unknown error occurred`, API_STATUS_CODE.UNKNOWN_ERROR, 500);
     }
 }

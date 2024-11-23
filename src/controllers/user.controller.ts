@@ -18,7 +18,7 @@ export class UserController {
             return;
         } catch (err) {
             if (err instanceof ApiError) {
-                res.status(500).json(dto.dataToResp(err.status_code, err.message, {}));
+                res.status(err.http_status).json(dto.dataToResp(err.status_code, err.message, {}));
                 return;
             }
             res.status(500).json(dto.dataToResp(API_STATUS_CODE.UNKNOWN_ERROR, "Unknown error", {}));
@@ -28,12 +28,21 @@ export class UserController {
     }
 
     async getUserById(req: Request, res: Response) {
-        const userId = parseInt(req.params.id);
-        const user = await userService.getUserById(userId);
-        if (user) {
-            res.json(user);
-        } else {
-            res.status(404).json({ error: 'User not found' });
+        try {
+            // Step 1: Call service to handle business logic
+            const user = await userService.getUserById(req.params);
+
+            // Step 2: return success response
+            res.status(200).json(dto.dataToResp(API_STATUS_CODE.SUCCESS, "Success", { user: user }));
+            return;
+        } catch (err) {
+            if (err instanceof ApiError) {
+                res.status(err.http_status).json(dto.dataToResp(err.status_code, err.message, {}));
+                return;
+            }
+            res.status(500).json(dto.dataToResp(API_STATUS_CODE.UNKNOWN_ERROR, "Unknown error", {}));
+            return;
+
         }
     }
 
