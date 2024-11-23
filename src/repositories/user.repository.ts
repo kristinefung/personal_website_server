@@ -1,35 +1,35 @@
 import prisma from '../prisma/prisma_client';
-import { UserModel } from '@prisma/client';
-import { userSchema, User } from '../schemas/user.schema';
+import { User } from '../schemas/user.schema';
+import { Dto } from '../utils/dto';
+import { ApiError } from 'src/utils/apiError';
 
-const className = 'UserRepository'
+const dto = new Dto();
+
+const sourceName = "UserRepository";
 
 export class UserRepository {
-    async createUser(user: User): Promise<User | Error> {
+    async createUser(user: User): Promise<User | ApiError> {
         try {
             const createdUser = await prisma.userModel.create({
                 data: {
-                    email: user.email,
-                    name: user.name,
-                    password: user.password,
-                    password_salt: "",
-                    role_id: 0,
-                    status_id: 0,
-                    created_at: new Date(),
-                    created_by: 1,
-                    updated_at: new Date(),
-                    updated_by: 1,
-                    deleted: 0,
+                    email: user.email ?? "",
+                    name: user.name ?? "",
+                    password: user.password ?? "",
+                    password_salt: user.password_salt ?? "",
+                    role_id: user.role_id ?? 0,
+                    status_id: user.status_id ?? 0,
+                    created_at: user.created_at ?? new Date(),
+                    created_by: user.created_by ?? 1,
+                    updated_at: user.updated_at ?? new Date(),
+                    updated_by: user.updated_by ?? 1,
+                    deleted: user.deleted ?? 0,
                 },
             });
             return createdUser;
 
         }
-        catch (err: unknown) {
-            if (err instanceof Error) {
-                throw new Error(`[${className}] User creation failed: ${err.message}`);
-            }
-            throw new Error(`[${className}] User creation failed: An unknown error occurred`);
+        catch (err: any) {
+            throw dto.dataToError(sourceName, err);
         }
     }
 

@@ -1,19 +1,22 @@
 import { UserRepository } from '../repositories/user.repository';
 import { User } from '../schemas/user.schema';
 
-const className = 'UserService';
+import { Dto } from '../utils/dto';
+import { ApiError } from 'src/utils/apiError';
+
+const sourceName = "UserService";
+
 const userRepository = new UserRepository();
+const dto = new Dto();
 
 export class UserService {
-    async createUser(user: User): Promise<User | Error> {
+    async createUser(user: User): Promise<User | ApiError> {
         try {
-            return await userRepository.createUser(user);
+            const createdUser = await userRepository.createUser(user);
+            return createdUser;
         }
-        catch (err: unknown) {
-            if (err instanceof Error) {
-                throw new Error(`[${className}] User creation failed: ${err.message}`);
-            }
-            throw new Error(`[${className}] User creation failed: An unknown error occurred`);
+        catch (err: any) {
+            throw dto.dataToError(sourceName, err);
         }
     }
 
