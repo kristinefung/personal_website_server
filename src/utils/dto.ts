@@ -1,5 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { ApiError } from './apiError';
+import { ZodError } from 'zod'
 
 export type FormattedResponse = {
     status: number,
@@ -20,6 +21,11 @@ export class Dto {
         if (err instanceof ApiError) {
             console.log(`[${source}] API error: ${err.message}`);
             throw err;
+        }
+
+        if (err instanceof ZodError || (err as ZodError).name === 'ZodError') {
+            console.log(`[${source}] Input error: ${err.message}`);
+            throw new ApiError(err.message, 3);
         }
 
         if (err instanceof Prisma.PrismaClientKnownRequestError) {

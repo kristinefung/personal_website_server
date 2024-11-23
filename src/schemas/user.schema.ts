@@ -1,4 +1,10 @@
+import { ApiError } from '../utils/apiError';
 import { z } from 'zod';
+import { Dto } from '../utils/dto';
+
+const dto = new Dto();
+
+const sourceName = "UserSchema";
 
 class ValidationResult<T> {
     public success: boolean;

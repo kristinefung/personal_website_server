@@ -16,30 +16,44 @@ export class UserRepository {
                     name: user.name ?? "",
                     password: user.password ?? "",
                     password_salt: user.password_salt ?? "",
-                    role_id: user.role_id ?? 0,
-                    status_id: user.status_id ?? 0,
+                    role_id: user.role_id ?? -1,
+                    status_id: user.status_id ?? -1,
                     created_at: user.created_at ?? new Date(),
-                    created_by: user.created_by ?? 1,
+                    created_by: user.created_by ?? -1,
                     updated_at: user.updated_at ?? new Date(),
-                    updated_by: user.updated_by ?? 1,
+                    updated_by: user.updated_by ?? -1,
                     deleted: user.deleted ?? 0,
                 },
             });
             return createdUser;
 
         }
-        catch (err: any) {
+        catch (err) {
+            throw dto.dataToError(sourceName, err);
+        }
+    }
+
+    async getUserByEmail(email: string): Promise<User | null | ApiError> {
+        try {
+            const user = await prisma.userModel.findUnique({
+                where: { email, deleted: 0 },
+            });
+            return user;
+        }
+        catch (err) {
             throw dto.dataToError(sourceName, err);
         }
     }
 
     async getUserById(id: number): Promise<User | null> {
         return await prisma.userModel.findUnique({
-            where: { id },
+            where: { id, deleted: 0 },
         });
     }
 
     async getAllUsers(): Promise<User[]> {
-        return await prisma.userModel.findMany();
+        return await prisma.userModel.findMany({
+            where: { deleted: 0 }
+        });
     }
 }

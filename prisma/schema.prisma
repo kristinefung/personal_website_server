@@ -16,9 +16,9 @@ model UserModel {
   role_id       Int
   status_id     Int
   created_at    DateTime @default(now())
-  created_by    Int
+  created_by    Int      @default(0)
   updated_at    DateTime @default(now())
-  updated_by    Int
+  updated_by    Int      @default(0)
   deleted       Int      @default(0) @db.TinyInt
 
   @@map("user")
