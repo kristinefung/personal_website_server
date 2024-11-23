@@ -47,7 +47,10 @@ export class UserRepository {
     async deleteUserById(id: number): Promise<null> {
         const user = await prisma.userModel.update({
             data: { deleted: 1 },
-            where: { id: id }
+            where: {
+                id: id,
+                deleted: 0
+            }
         });
         return null;
     }
