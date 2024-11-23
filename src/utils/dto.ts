@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { ApiError } from './apiError';
+import { ApiError } from './Err';
 import { ZodError } from 'zod'
 import { API_STATUS_CODE } from './enum';
 

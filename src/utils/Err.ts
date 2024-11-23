@@ -1,3 +1,9 @@
+import { Prisma } from '@prisma/client';
+
+const PrismaClientKnownRequestError = Prisma.PrismaClientKnownRequestError
+
+export { ZodError } from 'zod'
+export { PrismaClientKnownRequestError };
 export class ApiError extends Error {
     public message: string;
     public status_code: string;

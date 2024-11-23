@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { Dto } from '../utils/dto';
-import { ApiError } from '../utils/apiError';
-import { API_STATUS_CODE } from '../utils/enum';
+import { jsonResponse } from '../utils/jsonResponse';
 
 const userService = new UserService();
 const dto = new Dto();
@@ -14,16 +13,9 @@ export class UserController {
             const createdUser = await userService.createUser(req.body);
 
             // Step 2: return success response
-            res.status(200).json(dto.dataToResp(API_STATUS_CODE.SUCCESS, "Success", { user: createdUser }));
-            return;
+            return jsonResponse(res, { user: createdUser }, null);
         } catch (err) {
-            if (err instanceof ApiError) {
-                res.status(err.http_status).json(dto.dataToResp(err.status_code, err.message, {}));
-                return;
-            }
-            res.status(500).json(dto.dataToResp(API_STATUS_CODE.UNKNOWN_ERROR, "Unknown error", {}));
-            return;
-
+            return jsonResponse(res, {}, err);
         }
     }
 
@@ -33,21 +25,18 @@ export class UserController {
             const user = await userService.getUserById(req.params);
 
             // Step 2: return success response
-            res.status(200).json(dto.dataToResp(API_STATUS_CODE.SUCCESS, "Success", { user: user }));
-            return;
+            return jsonResponse(res, { user: user }, null);
         } catch (err) {
-            if (err instanceof ApiError) {
-                res.status(err.http_status).json(dto.dataToResp(err.status_code, err.message, {}));
-                return;
-            }
-            res.status(500).json(dto.dataToResp(API_STATUS_CODE.UNKNOWN_ERROR, "Unknown error", {}));
-            return;
-
+            return jsonResponse(res, {}, err);
         }
     }
 
     async getAllUsers(req: Request, res: Response) {
-        const users = await userService.getAllUsers();
-        res.json(users);
+        try {
+            const users = await userService.getAllUsers();
+            return jsonResponse(res, { users: users }, null);
+        } catch (err) {
+            return jsonResponse(res, {}, err);
+        }
     }
 }
