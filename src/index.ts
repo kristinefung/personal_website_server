@@ -1,20 +1,15 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import { UserController } from './controllers/user.controller';
+import { router } from './router/router';
 
 dotenv.config();
 
-const app = express();
 const PORT = process.env.PORT || 4000;;
-const userController = new UserController();
 
+const app = express();
 app.use(bodyParser.json());
-
-app.post('/users', (req, res) => userController.createUser(req, res));
-app.get('/users/:id', (req, res) => userController.getUserById(req, res));
-app.get('/users', (req, res) => userController.getAllUsers(req, res));
-app.delete('/users/:id', (req, res) => userController.deleteUserById(req, res));
+app.use(router);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
