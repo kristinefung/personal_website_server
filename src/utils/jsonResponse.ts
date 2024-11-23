@@ -41,7 +41,7 @@ export function jsonResponse(res: Response, data: any, err?: any) {
                 errorMsg = `Invalid input data: ${err.meta?.target}`;
                 break;
             default: // handling all other errors
-                errorMsg = `Error in database query`;
+                errorMsg = `Error in database query: ${err.meta?.cause}`;
         }
 
         res.status(500).json(formattedResponse(API_STATUS_CODE.DATABASE_ERROR, errorMsg, data));

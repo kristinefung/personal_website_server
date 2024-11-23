@@ -38,4 +38,13 @@ export class UserController {
             return jsonResponse(res, {}, err);
         }
     }
+
+    async deleteUserById(req: Request, res: Response) {
+        try {
+            const user = await userService.deleteUserById(req.params);
+            return jsonResponse(res, {}, null);
+        } catch (err) {
+            return jsonResponse(res, {}, err);
+        }
+    }
 }

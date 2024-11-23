@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.post('/users', (req, res) => userController.createUser(req, res));
 app.get('/users/:id', (req, res) => userController.getUserById(req, res));
 app.get('/users', (req, res) => userController.getAllUsers(req, res));
+app.delete('/users/:id', (req, res) => userController.deleteUserById(req, res));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

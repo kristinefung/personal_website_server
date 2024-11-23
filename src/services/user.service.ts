@@ -60,4 +60,10 @@ export class UserService {
         const users = await userRepo.getAllUsers();
         return users.map((user) => user.hideSensitive());
     }
+
+    async deleteUserById(reqParams: any): Promise<null | ApiError> {
+        const userId = parseInt(reqParams.id);
+        const user = await userRepo.deleteUserById(userId);
+        return user;
+    }
 }

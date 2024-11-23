@@ -37,11 +37,18 @@ export class UserRepository {
         return user ? new User(user) : null;
     }
 
-
     async getAllUsers(): Promise<User[]> {
         const users = await prisma.userModel.findMany({
             where: { deleted: 0 }
         });
-        return users.map(user => new User(user));;
+        return users.map(user => new User(user));
+    }
+
+    async deleteUserById(id: number): Promise<null> {
+        const user = await prisma.userModel.update({
+            data: { deleted: 1 },
+            where: { id: id }
+        });
+        return null;
     }
 }
