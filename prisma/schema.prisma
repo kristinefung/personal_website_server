@@ -1,0 +1,25 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model UserModel {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique(map: "email_UNIQUE")
+  name          String
+  password      String
+  password_salt String
+  role_id       Int
+  status_id     Int
+  created_at    DateTime @default(now())
+  created_by    Int
+  updated_at    DateTime @default(now())
+  updated_by    Int
+  deleted       Int      @default(0) @db.TinyInt
+
+  @@map("user")
+}
