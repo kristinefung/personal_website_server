@@ -5,10 +5,10 @@ import * as Err from './err';
 type FormattedResponse = {
     status_code: string,
     message: string,
-    data: any
+    data: object
 }
 
-function formattedResponse(status_code: string, message: string, data: any): FormattedResponse {
+function formattedResponse(status_code: string, message: string, data: object): FormattedResponse {
     return {
         status_code: status_code,
         message: message,
@@ -16,7 +16,7 @@ function formattedResponse(status_code: string, message: string, data: any): For
     };
 }
 
-export function jsonResponse(res: Response, data: any, err?: any) {
+export function jsonResponse(res: Response, data: object, err?: any) {
     console.log(err);
     if (err instanceof Err.ApiError) {
         res.status(err.http_status).json(formattedResponse(err.status_code, err.message, data));
