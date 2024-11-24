@@ -1,13 +1,13 @@
 /************************************************************************
  *                           User related
  ************************************************************************/
-export enum USER_ROLE {
+export enum UserRole {
     ADMIN = 0,
     USER = 1,
     DEMO = 2,
 }
 
-export enum USER_STATUS {
+export enum UserStatus {
     ACTIVE = 0,
     UNVERIFIED = 1, // Email not verified
     PENDING = 2, // Pending admin activate account manually
@@ -20,7 +20,7 @@ export enum USER_STATUS {
 /************************************************************************
  *                           API related
  ************************************************************************/
-export enum API_STATUS_CODE {
+export enum ApiStatusCode {
     SUCCESS = "SUCCESS",
     UNAUTHORIZED = "UNAUTHORIZED",
     INVALID_ARGUMENT = "INVALID_ARGUMENT",

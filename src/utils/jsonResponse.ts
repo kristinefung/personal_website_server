@@ -1,5 +1,5 @@
 import { Response } from 'express';
-import { API_STATUS_CODE } from './enum';
+import { ApiStatusCode } from './enum';
 import * as Err from './err';
 
 type FormattedResponse = {
@@ -24,7 +24,7 @@ export function jsonResponse(res: Response, data: object, err?: any) {
     }
 
     if (err instanceof Err.ZodError) {
-        res.status(400).json(formattedResponse(API_STATUS_CODE.INVALID_ARGUMENT, err.message, data));
+        res.status(400).json(formattedResponse(ApiStatusCode.INVALID_ARGUMENT, err.message, data));
         return;
     }
 
@@ -44,20 +44,20 @@ export function jsonResponse(res: Response, data: object, err?: any) {
                 errorMsg = `Error in database query: ${err.meta?.cause}`;
         }
 
-        res.status(500).json(formattedResponse(API_STATUS_CODE.DATABASE_ERROR, errorMsg, data));
+        res.status(500).json(formattedResponse(ApiStatusCode.DATABASE_ERROR, errorMsg, data));
         return;
     }
 
     if (err instanceof Error) {
-        res.status(500).json(formattedResponse(API_STATUS_CODE.SYSTEM_ERROR, err.message, data));
+        res.status(500).json(formattedResponse(ApiStatusCode.SYSTEM_ERROR, err.message, data));
         return;
     }
 
     if (err) {
-        res.status(500).json(formattedResponse(API_STATUS_CODE.UNKNOWN_ERROR, "An unknown error occurred", data));
+        res.status(500).json(formattedResponse(ApiStatusCode.UNKNOWN_ERROR, "An unknown error occurred", data));
         return;
     }
 
-    res.status(200).json(formattedResponse(API_STATUS_CODE.SUCCESS, "Success", data));
+    res.status(200).json(formattedResponse(ApiStatusCode.SUCCESS, "Success", data));
     return;
 }

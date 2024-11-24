@@ -5,7 +5,7 @@ import { User } from '../entities/user.entity';
 
 import { ApiError } from '../utils/err';
 import { genRandomString } from '../utils/common';
-import { USER_ROLE, USER_STATUS, API_STATUS_CODE } from '../utils/enum';
+import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
 
 const userRepo = new UserRepository();
 
@@ -15,14 +15,14 @@ export class UserService {
         const validateResult = userReq.validateCreateInput();
         if (!validateResult.success) {
             console.log(validateResult);
-            throw new ApiError(validateResult.errors?.[0] ?? "", API_STATUS_CODE.INVALID_ARGUMENT, 400);
+            throw new ApiError(validateResult.errors?.[0] ?? "", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
         let user = validateResult.data!;
 
         // Step 1: Check user email not existed in database
         const dbUser = await userRepo.getUserByEmail(user.email!)
         if (dbUser) {
-            throw new ApiError("User existed", API_STATUS_CODE.INVALID_ARGUMENT, 400);
+            throw new ApiError("User existed", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
         // Step 2: Hash user password
@@ -34,8 +34,8 @@ export class UserService {
         user.password = hashedPw;
 
         // Step 3: Assign user default role and status;
-        user.role_id = USER_ROLE.USER;
-        user.status_id = USER_STATUS.UNVERIFIED;
+        user.role_id = UserRole.USER;
+        user.status_id = UserStatus.UNVERIFIED;
 
         // Step 4: Insert user into database
         const userRes = await userRepo.createUser(user);
@@ -49,7 +49,7 @@ export class UserService {
     async getUserById(userId: number): Promise<User | ApiError> {
         const user = await userRepo.getUserById(userId);
         if (!user) {
-            throw new ApiError("User not existed", API_STATUS_CODE.INVALID_ARGUMENT, 400);
+            throw new ApiError("User not existed", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
         return user.hideSensitive();
     }
@@ -69,7 +69,7 @@ export class UserService {
         const validateResult = userReq.validateUpdateInput();
         if (!validateResult.success) {
             console.log(validateResult);
-            throw new ApiError(validateResult.errors?.[0] ?? "", API_STATUS_CODE.INVALID_ARGUMENT, 400);
+            throw new ApiError(validateResult.errors?.[0] ?? "", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
         let user = validateResult.data!;
 
