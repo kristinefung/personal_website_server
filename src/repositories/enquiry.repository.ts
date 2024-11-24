@@ -64,7 +64,6 @@ export class EnquiryRepository implements IEnquiryRepository {
                 conditions.push({
                     [field]: {
                         contains: value,
-                        mode: 'insensitive',
                     },
                 });
             }
