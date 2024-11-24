@@ -1,6 +1,10 @@
 import { z } from 'zod';
 
 import { ValidationResult } from '../utils/validationResult';
+import { genRandomString } from '../utils/common';
+import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
+
+import bcrypt from 'bcrypt';
 
 export class User {
     id?: number;
@@ -20,7 +24,7 @@ export class User {
         Object.assign(this, data);
     }
 
-    hideSensitive() {
+    hideSensitive(): User {
         const hiddenWord = "********";
 
         this.password = hiddenWord;
@@ -28,45 +32,83 @@ export class User {
         return this;
     }
 
-    validateCreateInput(): ValidationResult<User | undefined> {
-        return this._validateInput(z.object(
+    async hashPassword(): Promise<User> {
+        const salt = genRandomString(20);
+        const pwWithSalt = this.password! + salt;
+        const hashedPw = await bcrypt.hash(pwWithSalt, 10);
+
+        this.password_salt = salt;
+        this.password = hashedPw;
+
+        return this;
+    }
+
+    async verifyPassword(dbUser: User): Promise<User> {
+        const pw = this.password + dbUser.password_salt!;
+
+        const correct = await bcrypt.compare(pw, dbUser.password!)
+        if (!correct) {
+            const error = new Error("Email or password incorrect")
+            error.name = "API_INVALID_ARGUMENT"
+            throw error;
+        }
+
+        return this;
+    }
+
+    createInputToUser(): User {
+        const user = this._validateInput(z.object(
             {
                 name: z.string({ required_error: "name is required" }).min(1, "name is required"),
                 email: z.string({ required_error: "email is required" }).email("Invalid email address"),
                 password: z.string({ required_error: "password is required" }).min(1, "password is required"),
             }
         ));
+        Object.assign(this, user);
+
+        this.role_id = UserRole.USER;
+        this.status_id = UserStatus.UNVERIFIED;
+
+        this.created_at = new Date();
+        this.created_by = 9999;
+
+        return this;
     }
 
-    validateUpdateInput(): ValidationResult<User | undefined> {
-        return this._validateInput(z.object(
+    updateInputToUser(): User {
+        const user = this._validateInput(z.object(
             {
                 name: z.string().optional().nullable(),
                 email: z.string().email("Invalid email address").optional().nullable(),
                 password: z.string().optional().nullable(),
             }
         ));
+        Object.assign(this, user);
+
+        this.updated_at = new Date();
+        this.updated_by = 9999;
+        return this;
     }
 
-    validateLoginInput(): ValidationResult<User | undefined> {
-        return this._validateInput(z.object(
+    loginInputToUser(): User {
+        const user = this._validateInput(z.object(
             {
                 email: z.string({ required_error: "email is required" }).email("Invalid email address"),
                 password: z.string({ required_error: "password is required" }),
             }
         ));
+        Object.assign(this, user);
+        return this;
     }
 
-    private _validateInput(schema: z.ZodSchema): ValidationResult<User | undefined> {
+    private _validateInput(schema: z.ZodSchema): User {
         const result = schema.safeParse(this);
 
         if (!result.success) {
-            const errors = result.error.errors.map(e => e.message);
-            return new ValidationResult(false, undefined, errors);
+            const firstError = result.error.errors[0].message;
+            throw new Error(firstError);
         }
 
-        // Update fields with validated data
-        Object.assign(this, result.data);
-        return new ValidationResult(true, this);
+        return result.data;
     }
 }

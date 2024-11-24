@@ -26,12 +26,7 @@ export class UserService implements IUserService {
 
     async createUser(userReq: User): Promise<User | ApiError> {
         // Step 0: Data validation
-        const validateResult = userReq.validateCreateInput();
-        if (!validateResult.success) {
-            console.log(validateResult);
-            throw new ApiError(validateResult.errors?.[0] ?? "", ApiStatusCode.INVALID_ARGUMENT, 400);
-        }
-        let user = validateResult.data!;
+        let user = userReq.createInputToUser();
 
         // Step 1: Check user email not existed in database
         const dbUser = await this.userRepo.getUserByEmail(user.email!)
@@ -40,16 +35,7 @@ export class UserService implements IUserService {
         }
 
         // Step 2: Hash user password
-        const salt = genRandomString(20);
-        const pwWithSalt = user.password! + salt;
-        const hashedPw = await bcrypt.hash(pwWithSalt, 10);
-
-        user.password_salt = salt;
-        user.password = hashedPw;
-
-        // Step 3: Assign user default role and status;
-        user.role_id = UserRole.USER;
-        user.status_id = UserStatus.UNVERIFIED;
+        user = await user.hashPassword();
 
         // Step 4: Insert user into database
         const userRes = await this.userRepo.createUser(user);
@@ -80,12 +66,7 @@ export class UserService implements IUserService {
 
     async updateUserById(userId: number, userReq: User): Promise<User | ApiError> {
         // Step 0: Data validation
-        const validateResult = userReq.validateUpdateInput();
-        if (!validateResult.success) {
-            console.log(validateResult);
-            throw new ApiError(validateResult.errors?.[0] ?? "", ApiStatusCode.INVALID_ARGUMENT, 400);
-        }
-        let user = validateResult.data!;
+        let user = userReq.updateInputToUser();
 
         // Step 1: Update user into database
         const userRes = await this.userRepo.updateUserById(userId, user);
@@ -95,24 +76,15 @@ export class UserService implements IUserService {
 
     async login(userReq: User): Promise<string | ApiError> {
         // Step 0: Data validation
-        const validateResult = userReq.validateLoginInput();
-        if (!validateResult.success) {
-            console.log(validateResult);
-            throw new ApiError(validateResult.errors?.[0] ?? "", ApiStatusCode.INVALID_ARGUMENT, 400);
-        }
-        let user = validateResult.data!;
+        let user = userReq.loginInputToUser();
 
         // Step 1: Check if email and password are correct
         const dbUser = await this.userRepo.getUserByEmail(user.email!)
         if (!dbUser) {
             throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
-        const pw = user.password! + dbUser.password_salt!;
 
-        const pwCorrect = await bcrypt.compare(pw, dbUser.password!)
-        if (!pwCorrect) {
-            throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
-        }
+        user = await user.verifyPassword(dbUser)
 
         // Step 2: Generate user session token
         const token = await this.tokenServ.generateUserSessionToken(dbUser.id!);
