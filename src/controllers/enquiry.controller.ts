@@ -88,7 +88,7 @@ export class EnquiryController implements IEnquiryController {
         try {
             await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
-            const searchCriterias = req.query as unknown as Enquiry;
+            const searchCriterias = new Enquiry(req.body);
 
             const enquiries = await this.enquiryServ.searchEnquiries(searchCriterias);
             return jsonResponse(res, { enquiries: enquiries }, null);
