@@ -5,6 +5,7 @@ export enum UserRole {
     ADMIN = 1,
     USER = 2,
     DEMO = 3,
+    SYSTEM = 9999,
 }
 
 export enum UserStatus {
