@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { ValidationResult } from '../utils/validationResult';
 import { genRandomString } from '../utils/common';
 import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
+import { ApiError } from '../utils/err';
 
 import bcrypt from 'bcrypt';
 
@@ -48,9 +49,7 @@ export class User {
 
         const correct = await bcrypt.compare(pw, dbUser.password!)
         if (!correct) {
-            const error = new Error("Email or password incorrect")
-            error.name = "API_INVALID_ARGUMENT"
-            throw error;
+            new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
         return this;
@@ -106,7 +105,7 @@ export class User {
 
         if (!result.success) {
             const firstError = result.error.errors[0].message;
-            throw new Error(firstError);
+            throw new ApiError(firstError, ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
         return result.data;

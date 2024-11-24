@@ -14,6 +14,7 @@ type Payload = {
 }
 
 export interface IAuthService {
+    authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<void>;
     generateUserSessionToken(userId: number): Promise<string>;
 }
 
@@ -24,8 +25,7 @@ export class AuthService implements IAuthService {
     ) { }
 
     async authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<void> {
-        const err = new Error("User has no permission");
-        err.name = ApiStatusCode.UNAUTHORIZED;
+        const err = new ApiError("User has no permission", ApiStatusCode.UNAUTHORIZED, 401);
 
         // Step 1: Check is valid bear token
         if (typeof authHeader !== 'string') {

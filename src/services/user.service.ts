@@ -9,13 +9,13 @@ import { genRandomString } from '../utils/common';
 import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
 
 export interface IUserService {
-    createUser(userReq: User): Promise<User | ApiError>;
-    getUserById(userId: number): Promise<User | ApiError>;
-    getAllUsers(): Promise<User[] | ApiError>;
-    deleteUserById(userId: number): Promise<void | ApiError>;
-    updateUserById(userId: number, userReq: User): Promise<User | ApiError>;
+    createUser(userReq: User): Promise<User>;
+    getUserById(userId: number): Promise<User>;
+    getAllUsers(): Promise<User[]>;
+    deleteUserById(userId: number): Promise<void>;
+    updateUserById(userId: number, userReq: User): Promise<User>;
 
-    login(userReq: User): Promise<string | ApiError>;
+    login(userReq: User): Promise<string>;
 }
 
 export class UserService implements IUserService {
@@ -24,7 +24,7 @@ export class UserService implements IUserService {
         private authServ: AuthService
     ) { }
 
-    async createUser(userReq: User): Promise<User | ApiError> {
+    async createUser(userReq: User): Promise<User> {
         // Step 0: Data validation
         let user = userReq.createInputToUser();
 
@@ -46,7 +46,7 @@ export class UserService implements IUserService {
         return userRes.hideSensitive();
     }
 
-    async getUserById(userId: number): Promise<User | ApiError> {
+    async getUserById(userId: number): Promise<User> {
         const user = await this.userRepo.getUserById(userId);
         if (!user) {
             throw new ApiError("User not existed", ApiStatusCode.INVALID_ARGUMENT, 400);
@@ -54,17 +54,17 @@ export class UserService implements IUserService {
         return user.hideSensitive();
     }
 
-    async getAllUsers(): Promise<User[] | ApiError> {
+    async getAllUsers(): Promise<User[]> {
         const users = await this.userRepo.getAllUsers();
         return users.map((user) => user.hideSensitive());
     }
 
-    async deleteUserById(userId: number): Promise<void | ApiError> {
+    async deleteUserById(userId: number): Promise<void> {
         await this.userRepo.deleteUserById(userId);
         return;
     }
 
-    async updateUserById(userId: number, userReq: User): Promise<User | ApiError> {
+    async updateUserById(userId: number, userReq: User): Promise<User> {
         // Step 0: Data validation
         let user = userReq.updateInputToUser();
 
@@ -74,7 +74,7 @@ export class UserService implements IUserService {
         return userRes.hideSensitive();
     }
 
-    async login(userReq: User): Promise<string | ApiError> {
+    async login(userReq: User): Promise<string> {
         // Step 0: Data validation
         let user = userReq.loginInputToUser();
 
