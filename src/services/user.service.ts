@@ -13,7 +13,7 @@ export interface IUserService {
     createUser(userReq: User): Promise<User | ApiError>;
     getUserById(userId: number): Promise<User | ApiError>;
     getAllUsers(): Promise<User[] | ApiError>;
-    deleteUserById(userId: number): Promise<null | ApiError>;
+    deleteUserById(userId: number): Promise<void | ApiError>;
     updateUserById(userId: number, userReq: User): Promise<User | ApiError>;
 }
 
@@ -67,9 +67,9 @@ export class UserService implements IUserService {
         return users.map((user) => user.hideSensitive());
     }
 
-    async deleteUserById(userId: number): Promise<null | ApiError> {
-        const user = await userRepo.deleteUserById(userId);
-        return user;
+    async deleteUserById(userId: number): Promise<void | ApiError> {
+        await userRepo.deleteUserById(userId);
+        return;
     }
 
     async updateUserById(userId: number, userReq: User): Promise<User | ApiError> {

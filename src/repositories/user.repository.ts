@@ -6,7 +6,7 @@ export interface IUserRepository {
     getUserByEmail(email: string): Promise<User | null>;
     getUserById(id: number): Promise<User | null>;
     getAllUsers(): Promise<User[]>;
-    deleteUserById(id: number): Promise<null>;
+    deleteUserById(id: number): Promise<void>;
     updateUserById(id: number, user: User): Promise<User>;
 }
 
@@ -53,7 +53,7 @@ export class UserRepository implements IUserRepository {
         return users.map(user => new User(user));
     }
 
-    async deleteUserById(id: number): Promise<null> {
+    async deleteUserById(id: number): Promise<void> {
         const user = await prisma.userModel.update({
             data: { deleted: 1 },
             where: {
@@ -61,7 +61,7 @@ export class UserRepository implements IUserRepository {
                 deleted: 0
             }
         });
-        return null;
+        return;
     }
 
     async updateUserById(id: number, user: User): Promise<User> {

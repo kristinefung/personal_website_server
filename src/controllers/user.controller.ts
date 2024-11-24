@@ -53,7 +53,7 @@ export class UserController implements IUserController {
     async deleteUserById(req: Request, res: Response) {
         try {
             const userId = parseInt(req.params.id);
-            const user = await userService.deleteUserById(userId);
+            await userService.deleteUserById(userId);
             return jsonResponse(res, {}, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
