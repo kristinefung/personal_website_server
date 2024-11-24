@@ -3,13 +3,16 @@ import { PrismaClient } from '@prisma/client';
 import { UserSessionTokenRepository } from '../repositories/user_session_token.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { EnquiryRepository } from '../repositories/enquiry.repository';
+import { EducationRepository } from '../repositories/education.repository';
 
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { EnquiryService } from '../services/enquiry.service';
+import { EducationService } from '../services/education.service';
 
 import { UserController } from '../controllers/user.controller';
 import { EnquiryController } from '../controllers/enquiry.controller';
+import { EducationController } from '../controllers/education.controller';
 
 import dotenv from 'dotenv';
 
@@ -19,13 +22,16 @@ export class IoCContainer {
     private ustRepo: UserSessionTokenRepository;
     private userRepo: UserRepository;
     private enquiryRepo: EnquiryRepository;
+    private educationRepo: EducationRepository;
 
     private authServ: AuthService;
     private userServ: UserService;
     private enquiryServ: EnquiryService;
+    private educationServ: EducationService;
 
     private userCtlr: UserController;
     private enquiryCtlr: EnquiryController;
+    private educationCtlr: EducationController;
 
     constructor() {
 
@@ -40,15 +46,18 @@ export class IoCContainer {
         this.ustRepo = new UserSessionTokenRepository(this.prismaClient);
         this.userRepo = new UserRepository(this.prismaClient);
         this.enquiryRepo = new EnquiryRepository(this.prismaClient);
+        this.educationRepo = new EducationRepository(this.prismaClient);
 
         // Services
         this.authServ = new AuthService(this.ustRepo, this.userRepo);
         this.userServ = new UserService(this.userRepo, this.authServ);
-        this.enquiryServ = new EnquiryService(this.enquiryRepo)
+        this.enquiryServ = new EnquiryService(this.enquiryRepo);
+        this.educationServ = new EducationService(this.educationRepo);
 
         // Controllers
         this.userCtlr = new UserController(this.userServ, this.authServ);
         this.enquiryCtlr = new EnquiryController(this.enquiryServ, this.authServ);
+        this.educationCtlr = new EducationController(this.educationServ, this.authServ);
     }
 
     public getUserController(): UserController {
@@ -57,6 +66,10 @@ export class IoCContainer {
 
     public getEnquiryController(): EnquiryController {
         return this.enquiryCtlr;
+    }
+
+    public getEducationController(): EducationController {
+        return this.educationCtlr;
     }
 
     private _validateEnvVariables(): void {
