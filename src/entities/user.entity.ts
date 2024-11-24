@@ -16,20 +16,7 @@ export class User {
     updated_by?: number;
     deleted?: number;
 
-    constructor(data: {
-        id?: number,
-        email?: string,
-        name?: string,
-        password?: string,
-        password_salt?: string,
-        role_id?: number,
-        status_id?: number,
-        created_at?: Date,
-        created_by?: number,
-        updated_at?: Date,
-        updated_by?: number,
-        deleted?: number,
-    }) {
+    constructor(data: Partial<User> = {}) {
         Object.assign(this, data);
     }
 
