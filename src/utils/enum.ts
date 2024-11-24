@@ -1,5 +1,5 @@
 /************************************************************************
- *                           User related
+ *                           Domain related
  ************************************************************************/
 export enum UserRole {
     ADMIN = 1,
@@ -16,6 +16,13 @@ export enum UserStatus {
     LOCKED = 6, // Too many failed attempts, would store last user status
     DELETED = 6, // Account deleted, no longer accessible
 }
+
+export enum EnquiryStatus {
+    UNHANDLED = 1,
+    HANDLED = 2,
+    IGNORED = 3,
+}
+
 
 /************************************************************************
  *                           API related
