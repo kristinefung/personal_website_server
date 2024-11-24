@@ -55,3 +55,24 @@ model EnquiryModel {
 
   @@map("enquiry")
 }
+
+model EducationModel {
+  id          Int    @id @default(autoincrement())
+  degree      String
+  subject     String
+  school_name String
+  description String @db.VarChar(2000)
+  start_month Int
+  start_year  Int
+  end_month   Int
+  end_year    Int
+  is_current  Int    @db.TinyInt
+
+  created_at DateTime @default(now())
+  created_by Int      @default(0)
+  updated_at DateTime @default(now())
+  updated_by Int      @default(0)
+  deleted    Int      @default(0) @db.TinyInt
+
+  @@map("education")
+}
