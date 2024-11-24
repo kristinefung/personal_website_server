@@ -39,7 +39,7 @@ export class UserService implements IUserService {
 
         // Step 2: Hash user password
         const salt = genRandomString(20);
-        const pwWithSalt = user.password! + user.password_salt!;
+        const pwWithSalt = user.password! + salt;
         const hashedPw = await bcrypt.hash(pwWithSalt, 10);
 
         user.password_salt = salt;
