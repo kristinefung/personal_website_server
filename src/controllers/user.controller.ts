@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 
 import { UserService } from '../services/user.service';
 import { jsonResponse } from '../utils/jsonResponse';
+import { User } from '../entities/user.entity';
 
 const userService = new UserService();
 
@@ -9,7 +10,8 @@ export class UserController {
     async createUser(req: Request, res: Response) {
         try {
             // Step 1: Call service to handle business logic
-            const createdUser = await userService.createUser(req.body);
+            const userReq = new User(req.body);
+            const createdUser = await userService.createUser(userReq);
 
             // Step 2: return success response
             return jsonResponse(res, { user: createdUser }, null);
@@ -21,7 +23,8 @@ export class UserController {
     async getUserById(req: Request, res: Response) {
         try {
             // Step 1: Call service to handle business logic
-            const user = await userService.getUserById(req.params);
+            const userId = parseInt(req.params.id);
+            const user = await userService.getUserById(userId);
 
             // Step 2: return success response
             return jsonResponse(res, { user: user }, null);
@@ -41,7 +44,8 @@ export class UserController {
 
     async deleteUserById(req: Request, res: Response) {
         try {
-            const user = await userService.deleteUserById(req.params);
+            const userId = parseInt(req.params.id);
+            const user = await userService.deleteUserById(userId);
             return jsonResponse(res, {}, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
@@ -50,10 +54,13 @@ export class UserController {
 
     async updateUserById(req: Request, res: Response) {
         try {
-            const user = await userService.updateUserById(req.params, req.body);
+            const userReq = new User(req.body);
+            const userId = parseInt(req.params.id);
+            const user = await userService.updateUserById(userId, userReq);
             return jsonResponse(res, { user: user }, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
         }
     }
+
 }

@@ -10,9 +10,8 @@ import { USER_ROLE, USER_STATUS, API_STATUS_CODE } from '../utils/enum';
 const userRepo = new UserRepository();
 
 export class UserService {
-    async createUser(reqJson: any): Promise<User | ApiError> {
+    async createUser(userReq: User): Promise<User | ApiError> {
         // Step 0: Data validation
-        const userReq = new User(reqJson);
         const validateResult = userReq.validateCreateInput();
         if (!validateResult.success) {
             console.log(validateResult);
@@ -47,8 +46,7 @@ export class UserService {
         return userRes.hideSensitive();
     }
 
-    async getUserById(reqParams: any): Promise<User | ApiError> {
-        const userId = parseInt(reqParams.id);
+    async getUserById(userId: number): Promise<User | ApiError> {
         const user = await userRepo.getUserById(userId);
         if (!user) {
             throw new ApiError("User not existed", API_STATUS_CODE.INVALID_ARGUMENT, 400);
@@ -61,15 +59,13 @@ export class UserService {
         return users.map((user) => user.hideSensitive());
     }
 
-    async deleteUserById(reqParams: any): Promise<null | ApiError> {
-        const userId = parseInt(reqParams.id);
+    async deleteUserById(userId: number): Promise<null | ApiError> {
         const user = await userRepo.deleteUserById(userId);
         return user;
     }
 
-    async updateUserById(reqParams: any, reqJson: any): Promise<User | ApiError> {
+    async updateUserById(userId: number, userReq: User): Promise<User | ApiError> {
         // Step 0: Data validation
-        const userReq = new User(reqJson);
         const validateResult = userReq.validateUpdateInput();
         if (!validateResult.success) {
             console.log(validateResult);
@@ -78,7 +74,6 @@ export class UserService {
         let user = validateResult.data!;
 
         // Step 1: Update user into database
-        const userId = parseInt(reqParams.id);
         const userRes = await userRepo.updateUserById(userId, user);
 
         return userRes.hideSensitive();
