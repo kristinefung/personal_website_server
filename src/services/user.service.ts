@@ -9,7 +9,15 @@ import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
 
 const userRepo = new UserRepository();
 
-export class UserService {
+export interface IUserService {
+    createUser(userReq: User): Promise<User | ApiError>;
+    getUserById(userId: number): Promise<User | ApiError>;
+    getAllUsers(): Promise<User[] | ApiError>;
+    deleteUserById(userId: number): Promise<null | ApiError>;
+    updateUserById(userId: number, userReq: User): Promise<User | ApiError>;
+}
+
+export class UserService implements IUserService {
     async createUser(userReq: User): Promise<User | ApiError> {
         // Step 0: Data validation
         const validateResult = userReq.validateCreateInput();

@@ -6,7 +6,15 @@ import { User } from '../entities/user.entity';
 
 const userService = new UserService();
 
-export class UserController {
+export interface IUserController {
+    createUser(req: Request, res: Response): void;
+    getUserById(req: Request, res: Response): void;
+    getAllUsers(req: Request, res: Response): void;
+    deleteUserById(req: Request, res: Response): void;
+    updateUserById(req: Request, res: Response): void;
+}
+
+export class UserController implements IUserController {
     async createUser(req: Request, res: Response) {
         try {
             // Step 1: Call service to handle business logic

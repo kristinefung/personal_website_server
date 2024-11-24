@@ -1,7 +1,16 @@
 import prisma from './prisma/prisma_client';
 import { User } from '../entities/user.entity';
 
-export class UserRepository {
+export interface IUserRepository {
+    createUser(user: User): Promise<User>;
+    getUserByEmail(email: string): Promise<User | null>;
+    getUserById(id: number): Promise<User | null>;
+    getAllUsers(): Promise<User[]>;
+    deleteUserById(id: number): Promise<null>;
+    updateUserById(id: number, user: User): Promise<User>;
+}
+
+export class UserRepository implements IUserRepository {
     async createUser(user: User): Promise<User> {
         const createdUser = await prisma.userModel.create({
             data: {
