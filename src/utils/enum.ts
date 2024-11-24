@@ -2,18 +2,18 @@
  *                           User related
  ************************************************************************/
 export enum UserRole {
-    ADMIN = 0,
-    USER = 1,
-    DEMO = 2,
+    ADMIN = 1,
+    USER = 2,
+    DEMO = 3,
 }
 
 export enum UserStatus {
-    ACTIVE = 0,
-    UNVERIFIED = 1, // Email not verified
-    PENDING = 2, // Pending admin activate account manually
-    SUSPENDED = 3, // Temporarily cannot login
-    BANNED = 4, // Permanently banned
-    LOCKED = 5, // Too many failed attempts, would store last user status
+    ACTIVE = 1,
+    UNVERIFIED = 2, // Email not verified
+    PENDING = 3, // Pending admin activate account manually
+    SUSPENDED = 4, // Temporarily cannot login
+    BANNED = 5, // Permanently banned
+    LOCKED = 6, // Too many failed attempts, would store last user status
     DELETED = 6, // Account deleted, no longer accessible
 }
 

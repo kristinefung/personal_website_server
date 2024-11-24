@@ -29,11 +29,11 @@ export class IoCContainer {
         this.userRepo = new UserRepository(this.prismaClient);
 
         // Services
-        this.authServ = new AuthService(this.ustRepo);
+        this.authServ = new AuthService(this.ustRepo, this.userRepo);
         this.userServ = new UserService(this.userRepo, this.authServ);
 
         // Controllers
-        this.userCtlr = new UserController(this.userServ);
+        this.userCtlr = new UserController(this.userServ, this.authServ);
     }
 
     public getUserController(): UserController {

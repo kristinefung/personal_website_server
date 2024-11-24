@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
+import { AuthService } from '../services/auth.service';
 import { jsonResponse } from '../utils/jsonResponse';
 import { User } from '../entities/user.entity';
+import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
+import { ApiError } from 'src/utils/err';
 
 export interface IUserController {
     createUser(req: Request, res: Response): void;
@@ -15,7 +18,8 @@ export interface IUserController {
 
 export class UserController implements IUserController {
     constructor(
-        private userServ: UserService
+        private userServ: UserService,
+        private authServ: AuthService
     ) { }
     async createUser(req: Request, res: Response) {
         try {
@@ -32,6 +36,8 @@ export class UserController implements IUserController {
 
     async getUserById(req: Request, res: Response) {
         try {
+            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+
             // Step 1: Call service to handle business logic
             const userId = parseInt(req.params.id);
             const user = await this.userServ.getUserById(userId);
@@ -45,6 +51,8 @@ export class UserController implements IUserController {
 
     async getAllUsers(req: Request, res: Response) {
         try {
+            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+
             const users = await this.userServ.getAllUsers();
             return jsonResponse(res, { users: users }, null);
         } catch (err) {
@@ -54,6 +62,8 @@ export class UserController implements IUserController {
 
     async deleteUserById(req: Request, res: Response) {
         try {
+            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+
             const userId = parseInt(req.params.id);
             await this.userServ.deleteUserById(userId);
             return jsonResponse(res, {}, null);
@@ -64,6 +74,8 @@ export class UserController implements IUserController {
 
     async updateUserById(req: Request, res: Response) {
         try {
+            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+
             const userReq = new User(req.body);
             const userId = parseInt(req.params.id);
             const user = await this.userServ.updateUserById(userId, userReq);
