@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import { UserRepository } from '../repositories/user.repository';
-import { TokenService } from './token.service';
+import { AuthService } from './auth.service';
 import { User } from '../entities/user.entity';
 
 import { ApiError } from '../utils/err';
@@ -21,7 +21,7 @@ export interface IUserService {
 export class UserService implements IUserService {
     constructor(
         private userRepo: UserRepository,
-        private tokenServ: TokenService
+        private authServ: AuthService
     ) { }
 
     async createUser(userReq: User): Promise<User | ApiError> {
@@ -87,7 +87,7 @@ export class UserService implements IUserService {
         user = await user.verifyPassword(dbUser)
 
         // Step 2: Generate user session token
-        const token = await this.tokenServ.generateUserSessionToken(dbUser.id!);
+        const token = await this.authServ.generateUserSessionToken(dbUser.id!);
 
         return token;
     }

@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { UserSessionTokenRepository } from '../repositories/user_session_token.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { UserService } from '../services/user.service';
-import { TokenService } from '../services/token.service';
+import { AuthService } from '../services/auth.service';
 import { UserController } from '../controllers/user.controller';
 
 import dotenv from 'dotenv';
@@ -11,7 +11,7 @@ export class IoCContainer {
     private prismaClient: PrismaClient;
     private ustRepo: UserSessionTokenRepository;
     private userRepo: UserRepository;
-    private tokenServ: TokenService;
+    private authServ: AuthService;
     private userServ: UserService;
     private userCtlr: UserController;
 
@@ -29,8 +29,8 @@ export class IoCContainer {
         this.userRepo = new UserRepository(this.prismaClient);
 
         // Services
-        this.tokenServ = new TokenService(this.ustRepo);
-        this.userServ = new UserService(this.userRepo, this.tokenServ);
+        this.authServ = new AuthService(this.ustRepo);
+        this.userServ = new UserService(this.userRepo, this.authServ);
 
         // Controllers
         this.userCtlr = new UserController(this.userServ);

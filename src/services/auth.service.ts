@@ -5,11 +5,11 @@ import { UserSessionTokenRepository } from '../repositories/user_session_token.r
 
 const secretKey = process.env.JWT_SECRET_KEY || "";
 
-export interface ITokenService {
+export interface IAuthService {
     generateUserSessionToken(userId: number): Promise<string | ApiError>;
 }
 
-export class TokenService implements ITokenService {
+export class AuthService implements IAuthService {
     constructor(
         private ustRepo: UserSessionTokenRepository
     ) { }
