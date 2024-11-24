@@ -10,7 +10,7 @@ import { TokenService } from '../services/token.service';
 const prismaClient = new PrismaClient();
 
 const ustRepo = new UserSessionTokenRepository(prismaClient);
-const userRepo = new UserRepository();
+const userRepo = new UserRepository(prismaClient);
 
 const tokenServ = new TokenService(ustRepo);
 const userServ = new UserService(userRepo, tokenServ);

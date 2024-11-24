@@ -1,4 +1,4 @@
-import prisma from './prisma/prisma_client';
+import { PrismaClient } from '@prisma/client';
 import { User } from '../entities/user.entity';
 
 export interface IUserRepository {
@@ -11,8 +11,12 @@ export interface IUserRepository {
 }
 
 export class UserRepository implements IUserRepository {
+    constructor(
+        private prismaClient: PrismaClient
+    ) { }
+
     async createUser(user: User): Promise<User> {
-        const createdUser = await prisma.userModel.create({
+        const createdUser = await this.prismaClient.userModel.create({
             data: {
                 email: user.email ?? "",
                 name: user.name ?? "",
@@ -32,7 +36,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async getUserByEmail(email: string): Promise<User | null> {
-        const user = await prisma.userModel.findUnique({
+        const user = await this.prismaClient.userModel.findUnique({
             where: {
                 email,
                 deleted: 0
@@ -43,7 +47,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async getUserById(id: number): Promise<User | null> {
-        const user = await prisma.userModel.findUnique({
+        const user = await this.prismaClient.userModel.findUnique({
             where: {
                 id: id,
                 deleted: 0
@@ -53,7 +57,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async getAllUsers(): Promise<User[]> {
-        const users = await prisma.userModel.findMany({
+        const users = await this.prismaClient.userModel.findMany({
             where: {
                 deleted: 0
             },
@@ -62,7 +66,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async deleteUserById(id: number): Promise<void> {
-        const user = await prisma.userModel.update({
+        const user = await this.prismaClient.userModel.update({
             where: {
                 id: id,
                 deleted: 0
@@ -75,7 +79,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async updateUserById(id: number, user: User): Promise<User> {
-        const updatedUser = await prisma.userModel.update({
+        const updatedUser = await this.prismaClient.userModel.update({
             where: {
                 id: id,
                 deleted: 0,
