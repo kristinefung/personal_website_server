@@ -1,11 +1,8 @@
 import jwt from 'jsonwebtoken';
 
-import { UserRepository } from '../repositories/user.repository';
-
 import { ApiError } from '../utils/err';
 import { UserSessionTokenRepository } from '../repositories/user_session_token.repository';
 
-const ustRepo = new UserSessionTokenRepository();
 const secretKey = process.env.JWT_SECRET_KEY || "";
 
 export interface ITokenService {
@@ -13,6 +10,9 @@ export interface ITokenService {
 }
 
 export class TokenService implements ITokenService {
+    constructor(
+        private ustRepo: UserSessionTokenRepository
+    ) { }
     async generateUserSessionToken(userId: number): Promise<string | ApiError> {
         // Step 1: Sign JWT
         const payload = {
@@ -23,7 +23,7 @@ export class TokenService implements ITokenService {
         const token = jwt.sign(payload, secretKey);
 
         // Stpe 2: Save token to db
-        const dbToken = await ustRepo.createUserSessionToken(token);
+        const dbToken = await this.ustRepo.createUserSessionToken(token);
 
         return dbToken;
     };

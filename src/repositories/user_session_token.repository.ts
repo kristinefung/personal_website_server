@@ -1,4 +1,4 @@
-import prisma from './prisma/prisma_client';
+import { PrismaClient } from '@prisma/client';
 
 export interface IUserSessionTokenRepository {
     createUserSessionToken(token: string): Promise<string>;
@@ -7,8 +7,12 @@ export interface IUserSessionTokenRepository {
 }
 
 export class UserSessionTokenRepository implements IUserSessionTokenRepository {
+    constructor(
+        private prismaClient: PrismaClient
+    ) { }
+
     async createUserSessionToken(token: string): Promise<string> {
-        const createdUserSessionToken = await prisma.userSessionTokenModel.create({
+        const createdUserSessionToken = await this.prismaClient.userSessionTokenModel.create({
             data: {
                 token: token,
                 created_at: new Date(),
@@ -23,7 +27,7 @@ export class UserSessionTokenRepository implements IUserSessionTokenRepository {
     }
 
     async getUserSessionTokenByToken(token: string): Promise<string | null> {
-        const dbData = await prisma.userSessionTokenModel.findUnique({
+        const dbData = await this.prismaClient.userSessionTokenModel.findUnique({
             where: {
                 token: token,
                 deleted: 0
@@ -34,7 +38,7 @@ export class UserSessionTokenRepository implements IUserSessionTokenRepository {
     }
 
     async deleteUserSessionTokenByToken(token: string): Promise<void> {
-        const dbData = await prisma.userSessionTokenModel.update({
+        const dbData = await this.prismaClient.userSessionTokenModel.update({
             where: {
                 token: token,
                 deleted: 0
