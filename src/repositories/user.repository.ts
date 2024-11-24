@@ -33,7 +33,10 @@ export class UserRepository implements IUserRepository {
 
     async getUserByEmail(email: string): Promise<User | null> {
         const user = await prisma.userModel.findUnique({
-            where: { email, deleted: 0 },
+            where: {
+                email,
+                deleted: 0
+            },
         });
 
         return user ? new User(user) : null;
@@ -41,25 +44,32 @@ export class UserRepository implements IUserRepository {
 
     async getUserById(id: number): Promise<User | null> {
         const user = await prisma.userModel.findUnique({
-            where: { id, deleted: 0 },
+            where: {
+                id: id,
+                deleted: 0
+            },
         });
         return user ? new User(user) : null;
     }
 
     async getAllUsers(): Promise<User[]> {
         const users = await prisma.userModel.findMany({
-            where: { deleted: 0 }
+            where: {
+                deleted: 0
+            },
         });
         return users.map(user => new User(user));
     }
 
     async deleteUserById(id: number): Promise<void> {
         const user = await prisma.userModel.update({
-            data: { deleted: 1 },
             where: {
                 id: id,
                 deleted: 0
-            }
+            },
+            data: {
+                deleted: 1
+            },
         });
         return;
     }
