@@ -1,21 +1,8 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
-import { UserController } from '../controllers/user.controller';
+import { IoCContainer } from '../ioc/ioc_container';
 
-import { UserSessionTokenRepository } from '../repositories/user_session_token.repository';
-import { UserRepository } from '../repositories/user.repository';
-import { UserService } from '../services/user.service';
-import { TokenService } from '../services/token.service';
-
-const prismaClient = new PrismaClient();
-
-const ustRepo = new UserSessionTokenRepository(prismaClient);
-const userRepo = new UserRepository(prismaClient);
-
-const tokenServ = new TokenService(ustRepo);
-const userServ = new UserService(userRepo, tokenServ);
-
-const userCtlr = new UserController(userServ);
+const iocContainer = new IoCContainer();
+const userCtlr = iocContainer.getUserController();
 
 const router = express.Router();
 
