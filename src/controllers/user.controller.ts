@@ -3,8 +3,7 @@ import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { jsonResponse } from '../utils/jsonResponse';
 import { User } from '../entities/user.entity';
-import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
-import { ApiError } from 'src/utils/err';
+import { UserRole } from '../utils/enum';
 
 export interface IUserController {
     createUser(req: Request, res: Response): void;

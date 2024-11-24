@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-import { ValidationResult } from '../utils/validationResult';
 import { genRandomString } from '../utils/common';
 import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
 import { ApiError } from '../utils/err';

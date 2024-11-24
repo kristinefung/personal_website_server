@@ -1,12 +1,10 @@
-import bcrypt from 'bcrypt';
-
 import { UserRepository } from '../repositories/user.repository';
 import { AuthService } from './auth.service';
 import { User } from '../entities/user.entity';
 
 import { ApiError } from '../utils/err';
 import { genRandomString } from '../utils/common';
-import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
+import { ApiStatusCode } from '../utils/enum';
 
 export interface IUserService {
     createUser(userReq: User): Promise<User>;
