@@ -37,3 +37,21 @@ model UserSessionTokenModel {
 
   @@map("user_session_token")
 }
+
+model EnquiryModel {
+  id           Int     @id @default(autoincrement())
+  name         String
+  email        String
+  company_name String?
+  phone_no     String?
+  comment      String  @db.VarChar(2000)
+  status_id    Int
+
+  created_at DateTime @default(now())
+  created_by Int      @default(0)
+  updated_at DateTime @default(now())
+  updated_by Int      @default(0)
+  deleted    Int      @default(0) @db.TinyInt
+
+  @@map("enquiry")
+}
