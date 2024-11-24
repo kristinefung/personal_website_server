@@ -1,0 +1,17 @@
+-- AlterTable
+ALTER TABLE `user` MODIFY `created_by` INTEGER NOT NULL DEFAULT 0,
+    MODIFY `updated_by` INTEGER NOT NULL DEFAULT 0;
+
+-- CreateTable
+CREATE TABLE `user_session_token` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_id` INTEGER NOT NULL,
+    `token` VARCHAR(500) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `created_by` INTEGER NOT NULL DEFAULT 0,
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_by` INTEGER NOT NULL DEFAULT 0,
+    `deleted` TINYINT NOT NULL DEFAULT 0,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

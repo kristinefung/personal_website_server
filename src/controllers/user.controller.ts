@@ -12,6 +12,8 @@ export interface IUserController {
     getAllUsers(req: Request, res: Response): void;
     deleteUserById(req: Request, res: Response): void;
     updateUserById(req: Request, res: Response): void;
+
+    login(req: Request, res: Response): void;
 }
 
 export class UserController implements IUserController {
@@ -66,6 +68,16 @@ export class UserController implements IUserController {
             const userId = parseInt(req.params.id);
             const user = await userService.updateUserById(userId, userReq);
             return jsonResponse(res, { user: user }, null);
+        } catch (err) {
+            return jsonResponse(res, {}, err);
+        }
+    }
+
+    async login(req: Request, res: Response) {
+        try {
+            const userReq = new User(req.body);
+            const token = await userService.login(userReq);
+            return jsonResponse(res, { user_session_token: token }, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
         }

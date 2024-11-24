@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 
 import { UserRepository } from '../repositories/user.repository';
+import { TokenService } from './token.service';
 import { User } from '../entities/user.entity';
 
 import { ApiError } from '../utils/err';
@@ -8,6 +9,7 @@ import { genRandomString } from '../utils/common';
 import { UserRole, UserStatus, ApiStatusCode } from '../utils/enum';
 
 const userRepo = new UserRepository();
+const tokenServ = new TokenService();
 
 export interface IUserService {
     createUser(userReq: User): Promise<User | ApiError>;
@@ -15,6 +17,8 @@ export interface IUserService {
     getAllUsers(): Promise<User[] | ApiError>;
     deleteUserById(userId: number): Promise<void | ApiError>;
     updateUserById(userId: number, userReq: User): Promise<User | ApiError>;
+
+    login(userReq: User): Promise<string | ApiError>;
 }
 
 export class UserService implements IUserService {
@@ -85,5 +89,32 @@ export class UserService implements IUserService {
         const userRes = await userRepo.updateUserById(userId, user);
 
         return userRes.hideSensitive();
+    }
+
+    async login(userReq: User): Promise<string | ApiError> {
+        // Step 0: Data validation
+        const validateResult = userReq.validateLoginInput();
+        if (!validateResult.success) {
+            console.log(validateResult);
+            throw new ApiError(validateResult.errors?.[0] ?? "", ApiStatusCode.INVALID_ARGUMENT, 400);
+        }
+        let user = validateResult.data!;
+
+        // Step 1: Check if email and password are correct
+        const dbUser = await userRepo.getUserByEmail(user.email!)
+        if (!dbUser) {
+            throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
+        }
+        const pw = user.password! + dbUser.password_salt!;
+
+        const pwCorrect = await bcrypt.compare(pw, dbUser.password!)
+        if (!pwCorrect) {
+            throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
+        }
+
+        // Step 2: Generate user session token
+        const token = await tokenServ.generateUserSessionToken(dbUser.id!);
+
+        return token;
     }
 }

@@ -48,6 +48,15 @@ export class User {
         ));
     }
 
+    validateLoginInput(): ValidationResult<User | undefined> {
+        return this._validateInput(z.object(
+            {
+                email: z.string({ required_error: "email is required" }).email("Invalid email address"),
+                password: z.string({ required_error: "password is required" }),
+            }
+        ));
+    }
+
     private _validateInput(schema: z.ZodSchema): ValidationResult<User | undefined> {
         const result = schema.safeParse(this);
 
