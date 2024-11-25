@@ -72,6 +72,7 @@ export class IoCContainer {
         return this.educationCtlr;
     }
 
+    // TODO: Seems not easy to manage #refactor
     private _validateEnvVariables(): void {
         const requiredEnvVars = [
             'DATABASE_URL',
