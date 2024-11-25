@@ -29,7 +29,7 @@ export class Education {
         const user = this._validateInput(z.object(
             {
                 degree: z.string({ required_error: "degree is required" }).min(1, "degree is required"),
-                subject: z.string({ required_error: "subject is required" }).min(1, "degree is required"),
+                subject: z.string({ required_error: "subject is required" }).min(1, "subject is required"),
                 school_name: z.string({ required_error: "school_name is required" }).min(1, "school_name is required"),
                 description: z.string().optional().nullable(),
                 start_month: z.number({ required_error: "start_month is required", message: "start_month must be in range of 1 - 12" }).min(1).max(12),
