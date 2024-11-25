@@ -5,6 +5,7 @@ const iocContainer = new IoCContainer();
 const userCtlr = iocContainer.getUserController();
 const enquiryCtlr = iocContainer.getEnquiryController();
 const educationCtlr = iocContainer.getEducationController();
+const workCtlr = iocContainer.getWorkController();
 
 const router = express.Router();
 
@@ -36,5 +37,14 @@ router.get('/educations/:id', (req, res) => educationCtlr.getEducationById(req, 
 router.get('/educations', (req, res) => educationCtlr.getAllEducations(req, res));
 router.delete('/educations/:id', (req, res) => educationCtlr.deleteEducationById(req, res));
 router.put('/educations/:id', (req, res) => educationCtlr.updateEducationById(req, res));
+
+/*************************************************************
+ *                        Work Module
+ ************************************************************/
+router.post('/works', (req, res) => workCtlr.createWork(req, res));
+router.get('/works/:id', (req, res) => workCtlr.getWorkById(req, res));
+router.get('/works', (req, res) => workCtlr.getAllWorks(req, res));
+router.delete('/works/:id', (req, res) => workCtlr.deleteWorkById(req, res));
+router.put('/works/:id', (req, res) => workCtlr.updateWorkById(req, res));
 
 export { router };
