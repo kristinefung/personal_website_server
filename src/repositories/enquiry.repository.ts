@@ -18,18 +18,18 @@ export class EnquiryRepository implements IEnquiryRepository {
     async createEnquiry(enquiry: Enquiry): Promise<Enquiry> {
         const createdEnquiry = await this.prismaClient.enquiryModel.create({
             data: {
-                name: enquiry.name || "",
-                email: enquiry.email || "",
-                company_name: enquiry.company_name || "",
-                phone_no: enquiry.phone_no || "",
-                comment: enquiry.comment || "",
-                status_id: enquiry.status_id || 0,
+                name: enquiry.name ?? "",
+                email: enquiry.email ?? "",
+                company_name: enquiry.company_name ?? "",
+                phone_no: enquiry.phone_no ?? "",
+                comment: enquiry.comment ?? "",
+                status_id: enquiry.status_id ?? 0,
 
-                created_at: enquiry.created_at || new Date(),
-                created_by: enquiry.created_by || 0,
-                updated_at: enquiry.updated_at || new Date(),
-                updated_by: enquiry.updated_by || 0,
-                deleted: enquiry.deleted || 0,
+                created_at: enquiry.created_at ?? new Date(),
+                created_by: enquiry.created_by ?? 0,
+                updated_at: enquiry.updated_at ?? new Date(),
+                updated_by: enquiry.updated_by ?? 0,
+                deleted: enquiry.deleted ?? 0,
             },
         });
 
@@ -103,17 +103,17 @@ export class EnquiryRepository implements IEnquiryRepository {
                 deleted: 0,
             },
             data: {
-                name: enquiry.name || undefined,
-                email: enquiry.email || undefined,
-                company_name: enquiry.company_name || undefined,
-                phone_no: enquiry.phone_no || undefined,
-                comment: enquiry.comment || undefined,
-                status_id: enquiry.status_id || undefined,
-                created_at: enquiry.created_at || undefined,
-                created_by: enquiry.created_by || undefined,
-                updated_at: enquiry.updated_at || undefined,
-                updated_by: enquiry.updated_by || undefined,
-                deleted: enquiry.deleted || undefined,
+                name: enquiry.name ?? undefined,
+                email: enquiry.email ?? undefined,
+                company_name: enquiry.company_name ?? undefined,
+                phone_no: enquiry.phone_no ?? undefined,
+                comment: enquiry.comment ?? undefined,
+                status_id: enquiry.status_id ?? undefined,
+                created_at: enquiry.created_at ?? undefined,
+                created_by: enquiry.created_by ?? undefined,
+                updated_at: enquiry.updated_at ?? undefined,
+                updated_by: enquiry.updated_by ?? undefined,
+                deleted: enquiry.deleted ?? undefined,
             },
         });
 
