@@ -1,7 +1,7 @@
 import { PrismaClient, UserLoginLog } from '@prisma/client';
 
 export interface IUserLoginLogRepository {
-    createUserLoginLog(log: UserLoginLog): Promise<UserLoginLog>;
+    createUserLoginLog(log: Partial<UserLoginLog>): Promise<UserLoginLog>;
     updateUserLoginLogBySessionToken(log: UserLoginLog, sessionToken: string): Promise<UserLoginLog>
     getUserLoginLogBySessionToken(sessionToken: string): Promise<UserLoginLog | null>;
     findTopUserLoginLogByUserId(userId: number): Promise<UserLoginLog | null>
@@ -13,7 +13,7 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
         private prismaClient: PrismaClient
     ) { }
 
-    async createUserLoginLog(log: UserLoginLog): Promise<UserLoginLog> {
+    async createUserLoginLog(log: Partial<UserLoginLog>): Promise<UserLoginLog> {
         const createdUserLoginLog = await this.prismaClient.userLoginLog.create({
             data: {
                 userId: log.userId ?? 0,

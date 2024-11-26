@@ -2,8 +2,10 @@ import jwt from 'jsonwebtoken';
 import { UserRole, ApiStatusCode } from '../utils/enum';
 
 import { ApiError } from '../utils/err';
-import { UserSessionTokenRepository } from '../repositories/user_login_log.repository';
+import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
 import { UserRepository } from '../repositories/user.repository';
+
+import { UserLoginLog } from '@prisma/client';
 
 const secretKey = process.env.JWT_SECRET_KEY || "";
 
@@ -19,7 +21,7 @@ export interface IAuthService {
 
 export class AuthService implements IAuthService {
     constructor(
-        private ustRepo: UserSessionTokenRepository,
+        private ustRepo: UserLoginLogRepository,
         private userRepo: UserRepository
     ) { }
 
@@ -41,7 +43,7 @@ export class AuthService implements IAuthService {
         const bearerToken = authHeader.split(' ')[1];
 
         // Step 2: Check token is in database
-        const dbToken = await this.ustRepo.getUserSessionTokenByToken(bearerToken);
+        const dbToken = await this.ustRepo.getUserLoginLogBySessionToken(bearerToken);
         if (!dbToken) {
             console.error(`No session token record in db. Received: ${dbToken}`);
             throw err;
@@ -74,8 +76,11 @@ export class AuthService implements IAuthService {
         const token = jwt.sign(payload, secretKey);
 
         // Stpe 2: Save token to db
-        const dbToken = await this.ustRepo.createUserSessionToken(token);
+        const userLoginLog: Partial<UserLoginLog> = {
+            sessionToken: token
+        }
+        const dbUserLoginLog = await this.ustRepo.createUserLoginLog(userLoginLog);
 
-        return dbToken;
+        return token;
     };
 }

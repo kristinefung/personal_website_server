@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import { UserSessionTokenRepository } from '../repositories/user_login_log.repository';
+import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { EnquiryRepository } from '../repositories/enquiry.repository';
 import { EducationRepository } from '../repositories/education.repository';
@@ -22,7 +22,7 @@ import dotenv from 'dotenv';
 export class IoCContainer {
     private prismaClient: PrismaClient;
 
-    private ustRepo: UserSessionTokenRepository;
+    private ullRepo: UserLoginLogRepository;
     private userRepo: UserRepository;
     private enquiryRepo: EnquiryRepository;
     private educationRepo: EducationRepository;
@@ -49,14 +49,14 @@ export class IoCContainer {
         this.prismaClient = new PrismaClient();
 
         // Repositories
-        this.ustRepo = new UserSessionTokenRepository(this.prismaClient);
+        this.ullRepo = new UserLoginLogRepository(this.prismaClient);
         this.userRepo = new UserRepository(this.prismaClient);
         this.enquiryRepo = new EnquiryRepository(this.prismaClient);
         this.educationRepo = new EducationRepository(this.prismaClient);
         this.workRepo = new WorkRepository(this.prismaClient);
 
         // Services
-        this.authServ = new AuthService(this.ustRepo, this.userRepo);
+        this.authServ = new AuthService(this.ullRepo, this.userRepo);
         this.userServ = new UserService(this.userRepo, this.authServ);
         this.enquiryServ = new EnquiryService(this.enquiryRepo);
         this.educationServ = new EducationService(this.educationRepo);
