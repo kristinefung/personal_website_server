@@ -15,7 +15,7 @@ export class EducationRepository implements IEducationRepository {
     ) { }
 
     async createEducation(education: Education): Promise<Education> {
-        const createdEducation = await this.prismaClient.educationModel.create({
+        const createdEducation = await this.prismaClient.education.create({
             data: {
                 degree: education.degree ?? "",
                 subject: education.subject ?? "",
@@ -39,7 +39,7 @@ export class EducationRepository implements IEducationRepository {
     }
 
     async updateEducationById(id: number, education: Education): Promise<Education> {
-        const updatedEducation = await this.prismaClient.educationModel.update({
+        const updatedEducation = await this.prismaClient.education.update({
             where: {
                 id: id,
                 deleted: 0,
@@ -67,7 +67,7 @@ export class EducationRepository implements IEducationRepository {
     }
 
     async getEducationById(id: number): Promise<Education | null> {
-        const education = await this.prismaClient.educationModel.findUnique({
+        const education = await this.prismaClient.education.findUnique({
             where: {
                 id: id,
                 deleted: 0
@@ -77,7 +77,7 @@ export class EducationRepository implements IEducationRepository {
     }
 
     async getAllEducations(): Promise<Education[]> {
-        const educations = await this.prismaClient.educationModel.findMany({
+        const educations = await this.prismaClient.education.findMany({
             where: {
                 deleted: 0
             },
@@ -86,7 +86,7 @@ export class EducationRepository implements IEducationRepository {
     }
 
     async deleteEducationById(id: number): Promise<void> {
-        const education = await this.prismaClient.educationModel.update({
+        const education = await this.prismaClient.education.update({
             where: {
                 id: id,
                 deleted: 0

@@ -15,7 +15,7 @@ export class WorkRepository implements IWorkRepository {
     ) { }
 
     async createWork(work: Work): Promise<Work> {
-        const createdWork = await this.prismaClient.workModel.create({
+        const createdWork = await this.prismaClient.work.create({
             data: {
                 title: work.title ?? "",
                 companyName: work.companyName ?? "",
@@ -38,7 +38,7 @@ export class WorkRepository implements IWorkRepository {
     }
 
     async updateWorkById(id: number, work: Work): Promise<Work> {
-        const updatedWork = await this.prismaClient.workModel.update({
+        const updatedWork = await this.prismaClient.work.update({
             where: {
                 id: id,
                 deleted: 0,
@@ -65,7 +65,7 @@ export class WorkRepository implements IWorkRepository {
     }
 
     async getWorkById(id: number): Promise<Work | null> {
-        const work = await this.prismaClient.workModel.findUnique({
+        const work = await this.prismaClient.work.findUnique({
             where: {
                 id: id,
                 deleted: 0
@@ -75,7 +75,7 @@ export class WorkRepository implements IWorkRepository {
     }
 
     async getAllWorks(): Promise<Work[]> {
-        const works = await this.prismaClient.workModel.findMany({
+        const works = await this.prismaClient.work.findMany({
             where: {
                 deleted: 0
             },
@@ -84,7 +84,7 @@ export class WorkRepository implements IWorkRepository {
     }
 
     async deleteWorkById(id: number): Promise<void> {
-        const work = await this.prismaClient.workModel.update({
+        const work = await this.prismaClient.work.update({
             where: {
                 id: id,
                 deleted: 0

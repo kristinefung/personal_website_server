@@ -16,7 +16,7 @@ export class UserRepository implements IUserRepository {
     ) { }
 
     async createUser(user: User): Promise<User> {
-        const createdUser = await this.prismaClient.userModel.create({
+        const createdUser = await this.prismaClient.user.create({
             data: {
                 email: user.email ?? "",
                 name: user.name ?? "",
@@ -36,7 +36,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async getUserByEmail(email: string): Promise<User | null> {
-        const user = await this.prismaClient.userModel.findUnique({
+        const user = await this.prismaClient.user.findUnique({
             where: {
                 email,
                 deleted: 0
@@ -47,7 +47,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async getUserById(id: number): Promise<User | null> {
-        const user = await this.prismaClient.userModel.findUnique({
+        const user = await this.prismaClient.user.findUnique({
             where: {
                 id: id,
                 deleted: 0
@@ -57,7 +57,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async getAllUsers(): Promise<User[]> {
-        const users = await this.prismaClient.userModel.findMany({
+        const users = await this.prismaClient.user.findMany({
             where: {
                 deleted: 0
             },
@@ -66,7 +66,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async deleteUserById(id: number): Promise<void> {
-        const user = await this.prismaClient.userModel.update({
+        const user = await this.prismaClient.user.update({
             where: {
                 id: id,
                 deleted: 0
@@ -79,7 +79,7 @@ export class UserRepository implements IUserRepository {
     }
 
     async updateUserById(id: number, user: User): Promise<User> {
-        const updatedUser = await this.prismaClient.userModel.update({
+        const updatedUser = await this.prismaClient.user.update({
             where: {
                 id: id,
                 deleted: 0,

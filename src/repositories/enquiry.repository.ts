@@ -16,7 +16,7 @@ export class EnquiryRepository implements IEnquiryRepository {
     ) { }
 
     async createEnquiry(enquiry: Enquiry): Promise<Enquiry> {
-        const createdEnquiry = await this.prismaClient.enquiryModel.create({
+        const createdEnquiry = await this.prismaClient.enquiry.create({
             data: {
                 name: enquiry.name ?? "",
                 email: enquiry.email ?? "",
@@ -37,7 +37,7 @@ export class EnquiryRepository implements IEnquiryRepository {
     }
 
     async getEnquiryById(id: number): Promise<Enquiry | null> {
-        const enquiry = await this.prismaClient.enquiryModel.findUnique({
+        const enquiry = await this.prismaClient.enquiry.findUnique({
             where: {
                 id: id,
                 deleted: 0
@@ -47,7 +47,7 @@ export class EnquiryRepository implements IEnquiryRepository {
     }
 
     async getAllEnquiries(): Promise<Enquiry[]> {
-        const enquirys = await this.prismaClient.enquiryModel.findMany({
+        const enquirys = await this.prismaClient.enquiry.findMany({
             where: {
                 deleted: 0
             },
@@ -74,7 +74,7 @@ export class EnquiryRepository implements IEnquiryRepository {
         addCondition('phone_no', enquiry.phoneNo);
         addCondition('status_id', enquiry.statusId);
 
-        const enquirys = await this.prismaClient.enquiryModel.findMany({
+        const enquirys = await this.prismaClient.enquiry.findMany({
             where: {
                 AND: conditions,
             },
@@ -84,7 +84,7 @@ export class EnquiryRepository implements IEnquiryRepository {
     }
 
     async deleteEnquiryById(id: number): Promise<void> {
-        const enquiry = await this.prismaClient.enquiryModel.update({
+        const enquiry = await this.prismaClient.enquiry.update({
             where: {
                 id: id,
                 deleted: 0
@@ -97,7 +97,7 @@ export class EnquiryRepository implements IEnquiryRepository {
     }
 
     async updateEnquiryById(id: number, enquiry: Enquiry): Promise<Enquiry> {
-        const updatedEnquiry = await this.prismaClient.enquiryModel.update({
+        const updatedEnquiry = await this.prismaClient.enquiry.update({
             where: {
                 id: id,
                 deleted: 0,
