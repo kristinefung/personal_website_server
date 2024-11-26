@@ -10,14 +10,14 @@ export class User {
     id?: number;
     email?: string;
     name?: string;
-    password?: string;
-    password_salt?: string;
-    role_id?: number;
-    status_id?: number;
-    created_at?: Date;
-    created_by?: number;
-    updated_at?: Date;
-    updated_by?: number;
+    hashedPassword?: string;
+    passwordSalt?: string;
+    roleId?: number;
+    statusId?: number;
+    createdAt?: Date;
+    createdBy?: number;
+    updatedAt?: Date;
+    updatedBy?: number;
     deleted?: number;
 
     constructor(data: Partial<User> = {}) {
@@ -27,26 +27,26 @@ export class User {
     hideSensitive(): User {
         const hiddenWord = "********";
 
-        this.password = hiddenWord;
-        this.password_salt = hiddenWord;
+        this.hashedPassword = hiddenWord;
+        this.passwordSalt = hiddenWord;
         return this;
     }
 
     async hashPassword(): Promise<User> {
         const salt = genRandomString(20);
-        const pwWithSalt = this.password! + salt;
+        const pwWithSalt = this.hashedPassword! + salt;
         const hashedPw = await bcrypt.hash(pwWithSalt, 10);
 
-        this.password_salt = salt;
-        this.password = hashedPw;
+        this.passwordSalt = salt;
+        this.hashedPassword = hashedPw;
 
         return this;
     }
 
     async verifyPassword(dbUser: User): Promise<User> {
-        const pw = this.password + dbUser.password_salt!;
+        const pw = this.hashedPassword + dbUser.passwordSalt!;
 
-        const correct = await bcrypt.compare(pw, dbUser.password!)
+        const correct = await bcrypt.compare(pw, dbUser.hashedPassword!)
         if (!correct) {
             new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
@@ -59,16 +59,16 @@ export class User {
             {
                 name: z.string({ required_error: "name is required" }).min(1, "name is required"),
                 email: z.string({ required_error: "email is required" }).email("Invalid email address"),
-                password: z.string({ required_error: "password is required" }).min(1, "password is required"),
+                hashedPassword: z.string({ required_error: "hashedPassword is required" }).min(1, "hashedPassword is required"),
             }
         ));
         Object.assign(this, user);
 
-        this.role_id = UserRole.USER;
-        this.status_id = UserStatus.UNVERIFIED;
+        this.roleId = UserRole.USER;
+        this.statusId = UserStatus.UNVERIFIED;
 
-        this.created_at = new Date();
-        this.created_by = 9999;
+        this.createdAt = new Date();
+        this.createdBy = 9999;
 
         return this;
     }
@@ -78,13 +78,13 @@ export class User {
             {
                 name: z.string().optional().nullable(),
                 email: z.string().email("Invalid email address").optional().nullable(),
-                password: z.string().optional().nullable(),
+                hashedPassword: z.string().optional().nullable(),
             }
         ));
         Object.assign(this, user);
 
-        this.updated_at = new Date();
-        this.updated_by = 9999;
+        this.updatedAt = new Date();
+        this.updatedBy = 9999;
         return this;
     }
 

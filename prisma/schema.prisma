@@ -8,91 +8,91 @@ generator client {
 }
 
 model UserModel {
-  id            Int    @id @default(autoincrement())
-  email         String @unique(map: "email_UNIQUE")
-  name          String
-  password      String
-  password_salt String
-  role_id       Int
-  status_id     Int
+  id             Int    @id @default(autoincrement())
+  email          String @unique(map: "email_UNIQUE")
+  name           String
+  hashedPassword String
+  passwordSalt   String
+  roleId         Int
+  statusId       Int
 
-  created_at DateTime @default(now())
-  created_by Int      @default(0)
-  updated_at DateTime @default(now())
-  updated_by Int      @default(0)
-  deleted    Int      @default(0) @db.TinyInt
+  createdAt DateTime @default(now())
+  createdBy Int      @default(0)
+  updatedAt DateTime @default(now())
+  updatedBy Int      @default(0)
+  deleted   Int      @default(0) @db.TinyInt
 
-  @@map("user")
+  @@map("User")
 }
 
 model UserSessionTokenModel {
   id    Int    @id @default(autoincrement())
-  token String @unique(map: "user_session_token_UNIQUE") @db.VarChar(500)
+  token String @unique(map: "token_UNIQUE") @db.VarChar(500)
 
-  created_at DateTime @default(now())
-  created_by Int      @default(0)
-  updated_at DateTime @default(now())
-  updated_by Int      @default(0)
-  deleted    Int      @default(0) @db.TinyInt
+  createdAt DateTime @default(now())
+  createdBy Int      @default(0)
+  updatedAt DateTime @default(now())
+  updatedBy Int      @default(0)
+  deleted   Int      @default(0) @db.TinyInt
 
-  @@map("user_session_token")
+  @@map("UserSessionToken")
 }
 
 model EnquiryModel {
-  id           Int    @id @default(autoincrement())
-  name         String
-  email        String
-  company_name String
-  phone_no     String
-  comment      String @db.VarChar(2000)
-  status_id    Int
+  id          Int    @id @default(autoincrement())
+  name        String
+  email       String
+  companyName String
+  phoneNo     String
+  comment     String @db.VarChar(2000)
+  statusId    Int
 
-  created_at DateTime @default(now())
-  created_by Int      @default(0)
-  updated_at DateTime @default(now())
-  updated_by Int      @default(0)
-  deleted    Int      @default(0) @db.TinyInt
+  createdAt DateTime @default(now())
+  createdBy Int      @default(0)
+  updatedAt DateTime @default(now())
+  updatedBy Int      @default(0)
+  deleted   Int      @default(0) @db.TinyInt
 
-  @@map("enquiry")
+  @@map("Enquiry")
 }
 
 model EducationModel {
   id          Int    @id @default(autoincrement())
   degree      String
   subject     String
-  school_name String
+  schoolName  String
   description String @db.VarChar(2000)
-  start_month Int
-  start_year  Int
-  end_month   Int
-  end_year    Int
-  is_current  Int    @db.TinyInt
+  startMonth  Int
+  startYear   Int
+  endMonth    Int
+  endYear     Int
+  isCurrent   Int    @db.TinyInt
 
-  created_at DateTime @default(now())
-  created_by Int      @default(0)
-  updated_at DateTime @default(now())
-  updated_by Int      @default(0)
-  deleted    Int      @default(0) @db.TinyInt
+  createdAt DateTime @default(now())
+  createdBy Int      @default(0)
+  updatedAt DateTime @default(now())
+  updatedBy Int      @default(0)
+  deleted   Int      @default(0) @db.TinyInt
 
-  @@map("education")
+  @@map("Education")
 }
 
 model WorkModel {
-  id           Int    @id @default(autoincrement())
-  title        String
-  company_name String
-  description  String @db.VarChar(2000)
-  start_month  Int
-  start_year   Int
-  end_month    Int
-  end_year     Int
-  is_current   Int    @db.TinyInt
+  id          Int    @id @default(autoincrement())
+  title       String
+  companyName String
+  description String @db.VarChar(2000)
+  startMonth  Int
+  startYear   Int
+  endMonth    Int
+  endYear     Int
+  isCurrent   Int    @db.TinyInt
 
-  created_at DateTime @default(now())
-  created_by Int      @default(0)
-  updated_at DateTime @default(now())
-  updated_by Int      @default(0)
-  deleted    Int      @default(0) @db.TinyInt
+  createdAt DateTime @default(now())
+  createdBy Int      @default(0)
+  updatedAt DateTime @default(now())
+  updatedBy Int      @default(0)
+  deleted   Int      @default(0) @db.TinyInt
 
-  @@map("work")
+  @@map("Work")
 }

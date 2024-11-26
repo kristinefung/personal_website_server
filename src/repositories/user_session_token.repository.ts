@@ -15,10 +15,10 @@ export class UserSessionTokenRepository implements IUserSessionTokenRepository {
         const createdUserSessionToken = await this.prismaClient.userSessionTokenModel.create({
             data: {
                 token: token,
-                created_at: new Date(),
-                created_by: -1,
-                updated_at: new Date(),
-                updated_by: -1,
+                createdAt: new Date(),
+                createdBy: -1,
+                updatedAt: new Date(),
+                updatedBy: -1,
                 deleted: 0,
             },
         });

@@ -6,18 +6,18 @@ export class Education {
     id?: number;
     degree?: string;
     subject?: string;
-    school_name?: string;
+    schoolName?: string;
     description?: string;
-    start_month?: number;
-    start_year?: number;
-    end_month?: number;
-    end_year?: number;
-    is_current?: number;
+    startMonth?: number;
+    startYear?: number;
+    endMonth?: number;
+    endYear?: number;
+    isCurrent?: number;
 
-    created_at?: Date;
-    created_by?: UserRole;
-    updated_at?: Date;
-    updated_by?: UserRole;
+    createdAt?: Date;
+    createdBy?: UserRole;
+    updatedAt?: Date;
+    updatedBy?: UserRole;
     deleted?: number;
 
 
@@ -30,29 +30,29 @@ export class Education {
             {
                 degree: z.string({ required_error: "degree is required" }).min(1, "degree is required"),
                 subject: z.string({ required_error: "subject is required" }).min(1, "subject is required"),
-                school_name: z.string({ required_error: "school_name is required" }).min(1, "school_name is required"),
+                schoolName: z.string({ required_error: "schoolName is required" }).min(1, "schoolName is required"),
                 description: z.string().optional().nullable(),
-                start_month: z.number({ required_error: "start_month is required", message: "start_month must be in range of 1 - 12" }).min(1).max(12),
-                start_year: z.number({ required_error: "start_year is required", message: "start_year must be in range of 1900 - now" }).min(1900).max(new Date().getFullYear()),
-                end_month: z
-                    .number({ message: "start_month must be in range of 1 - 12" })
+                startMonth: z.number({ required_error: "startMonth is required", message: "startMonth must be in range of 1 - 12" }).min(1).max(12),
+                startYear: z.number({ required_error: "startYear is required", message: "startYear must be in range of 1900 - now" }).min(1900).max(new Date().getFullYear()),
+                endMonth: z
+                    .number({ message: "endMonth must be in range of 1 - 12" })
                     .min(1)
                     .max(12)
                     .optional()
                     .nullable(),
                 end_year: z
-                    .number({ message: "start_year must be in range of 1900 - now" })
+                    .number({ message: "end_year must be in range of 1900 - now" })
                     .min(1900)
                     .max(new Date().getFullYear())
                     .optional()
                     .nullable(),
-                is_current: z.number({ required_error: "is_current is required", message: "is_current must be 0 or 1" }).min(0).max(1),
+                isCurrent: z.number({ required_error: "isCurrent is required", message: "isCurrent must be 0 or 1" }).min(0).max(1),
             }
         ));
         Object.assign(this, user);
 
-        this.created_at = new Date();
-        this.created_by = 9999;
+        this.createdAt = new Date();
+        this.createdBy = 9999;
 
         return this;
     }
@@ -61,30 +61,30 @@ export class Education {
         const user = this._validateInput(z.object(
             {
                 degree: z.string({ required_error: "degree is required" }).min(1, "degree is required").optional().nullable(),
-                subject: z.string({ required_error: "subject is required" }).min(1, "degree is required").optional().nullable(),
-                school_name: z.string({ required_error: "school_name is required" }).min(1, "school_name is required").optional().nullable(),
+                subject: z.string({ required_error: "subject is required" }).min(1, "subject is required").optional().nullable(),
+                schoolName: z.string({ required_error: "schoolName is required" }).min(1, "schoolName is required").optional().nullable(),
                 description: z.string().optional().nullable(),
-                start_month: z.number({ required_error: "start_month is required", message: "start_month must be in range of 1 - 12" }).min(1).max(12).optional().nullable(),
-                start_year: z.number({ required_error: "start_year is required", message: "start_year must be in range of 1900 - now" }).min(1900).max(new Date().getFullYear()).optional().nullable(),
-                end_month: z
-                    .number({ message: "start_month must be in range of 1 - 12" })
+                startMonth: z.number({ required_error: "startMonth is required", message: "startMonth must be in range of 1 - 12" }).min(1).max(12).optional().nullable(),
+                startYear: z.number({ required_error: "startYear is required", message: "startYear must be in range of 1900 - now" }).min(1900).max(new Date().getFullYear()).optional().nullable(),
+                endMonth: z
+                    .number({ message: "endMonth must be in range of 1 - 12" })
                     .min(1)
                     .max(12)
                     .optional()
                     .nullable(),
-                end_year: z
-                    .number({ message: "start_year must be in range of 1900 - now" })
+                endYear: z
+                    .number({ message: "endYear must be in range of 1900 - now" })
                     .min(1900)
                     .max(new Date().getFullYear())
                     .optional()
                     .nullable(),
-                is_current: z.number({ required_error: "is_current is required", message: "is_current must be 0 or 1" }).min(0).max(1).optional().nullable(),
+                isCurrent: z.number({ required_error: "isCurrent is required", message: "isCurrent must be 0 or 1" }).min(0).max(1).optional().nullable(),
             }
         ));
         Object.assign(this, user);
 
-        this.updated_at = new Date();
-        this.updated_by = 9999;
+        this.updatedAt = new Date();
+        this.updatedBy = 9999;
         return this;
     }
 

@@ -6,14 +6,14 @@ export class Enquiry {
     id?: number;
     name?: string;
     email?: string;
-    company_name?: string;
-    phone_no?: string;
+    companyName?: string;
+    phoneNo?: string;
     comment?: string;
-    status_id?: EnquiryStatus;
-    created_at?: Date;
-    created_by?: number;
-    updated_at?: Date;
-    updated_by?: number;
+    statusId?: EnquiryStatus;
+    createdAt?: Date;
+    createdBy?: number;
+    updatedAt?: Date;
+    updatedBy?: number;
     deleted?: number;
 
     constructor(data: Partial<Enquiry> = {}) {
@@ -26,16 +26,16 @@ export class Enquiry {
                 name: z.string({ required_error: "name is required" }).min(1, "name is required"),
                 email: z.string({ required_error: "email is required" }).email("Invalid email address"),
                 company_name: z.string().optional().nullable(),
-                phone_no: z.string().optional().nullable(),
+                phoneNo: z.string().optional().nullable(),
                 comment: z.string({ required_error: "comment is required" }).min(1, "comment is required"),
             }
         ));
         Object.assign(this, user);
 
-        this.status_id = EnquiryStatus.UNHANDLED;
+        this.statusId = EnquiryStatus.UNHANDLED;
 
-        this.created_at = new Date();
-        this.created_by = 9999;
+        this.createdAt = new Date();
+        this.createdBy = 9999;
 
         return this;
     }
@@ -45,16 +45,16 @@ export class Enquiry {
             {
                 name: z.string().optional().nullable(),
                 email: z.string().email("Invalid email address").optional().nullable(),
-                company_name: z.string().optional().nullable(),
-                phone_no: z.string().optional().nullable(),
-                status_id: z.number().optional().nullable(),
+                companyName: z.string().optional().nullable(),
+                phoneNo: z.string().optional().nullable(),
+                statusId: z.number().optional().nullable(),
                 comment: z.string().optional().nullable(),
             }
         ));
         Object.assign(this, user);
 
-        this.updated_at = new Date();
-        this.updated_by = 9999;
+        this.updatedAt = new Date();
+        this.updatedBy = 9999;
         return this;
     }
 

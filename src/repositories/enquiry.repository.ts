@@ -20,15 +20,15 @@ export class EnquiryRepository implements IEnquiryRepository {
             data: {
                 name: enquiry.name ?? "",
                 email: enquiry.email ?? "",
-                company_name: enquiry.company_name ?? "",
-                phone_no: enquiry.phone_no ?? "",
+                companyName: enquiry.companyName ?? "",
+                phoneNo: enquiry.phoneNo ?? "",
                 comment: enquiry.comment ?? "",
-                status_id: enquiry.status_id ?? 0,
+                statusId: enquiry.statusId ?? 0,
 
-                created_at: enquiry.created_at ?? new Date(),
-                created_by: enquiry.created_by ?? 0,
-                updated_at: enquiry.updated_at ?? new Date(),
-                updated_by: enquiry.updated_by ?? 0,
+                createdAt: enquiry.createdAt ?? new Date(),
+                createdBy: enquiry.createdBy ?? 0,
+                updatedAt: enquiry.updatedAt ?? new Date(),
+                updatedBy: enquiry.updatedBy ?? 0,
                 deleted: enquiry.deleted ?? 0,
             },
         });
@@ -71,8 +71,8 @@ export class EnquiryRepository implements IEnquiryRepository {
 
         addCondition('name', enquiry.name);
         addCondition('email', enquiry.email);
-        addCondition('phone_no', enquiry.phone_no);
-        addCondition('status_id', enquiry.status_id);
+        addCondition('phone_no', enquiry.phoneNo);
+        addCondition('status_id', enquiry.statusId);
 
         const enquirys = await this.prismaClient.enquiryModel.findMany({
             where: {
@@ -105,14 +105,14 @@ export class EnquiryRepository implements IEnquiryRepository {
             data: {
                 name: enquiry.name ?? undefined,
                 email: enquiry.email ?? undefined,
-                company_name: enquiry.company_name ?? undefined,
-                phone_no: enquiry.phone_no ?? undefined,
+                companyName: enquiry.companyName ?? undefined,
+                phoneNo: enquiry.phoneNo ?? undefined,
                 comment: enquiry.comment ?? undefined,
-                status_id: enquiry.status_id ?? undefined,
-                created_at: enquiry.created_at ?? undefined,
-                created_by: enquiry.created_by ?? undefined,
-                updated_at: enquiry.updated_at ?? undefined,
-                updated_by: enquiry.updated_by ?? undefined,
+                statusId: enquiry.statusId ?? undefined,
+                createdAt: enquiry.createdAt ?? undefined,
+                createdBy: enquiry.createdBy ?? undefined,
+                updatedAt: enquiry.updatedAt ?? undefined,
+                updatedBy: enquiry.updatedBy ?? undefined,
                 deleted: enquiry.deleted ?? undefined,
             },
         });
