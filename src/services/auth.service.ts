@@ -51,14 +51,14 @@ export class AuthService implements IAuthService {
         const payload = jwt.verify(bearerToken, secretKey) as Payload;
 
         const user = await this.userRepo.getUserById(payload.userId);
-        if (!user?.role_id) {
-            console.error(`No user role_id found. UserId: ${payload.userId}, Received: ${JSON.stringify(user)}`);
+        if (!user?.roleId) {
+            console.error(`No user roleId found. UserId: ${payload.userId}, Received: ${JSON.stringify(user)}`);
             throw err;
         }
 
         // Step 4: Check user role has permission
-        if (!requiredRoleIds.includes(user.role_id!)) {
-            console.error(`User role has no permission. Expected: ${requiredRoleIds}, Received: ${user.role_id}`);
+        if (!requiredRoleIds.includes(user.roleId!)) {
+            console.error(`User role has no permission. Expected: ${requiredRoleIds}, Received: ${user.roleId}`);
             throw err;
         }
 

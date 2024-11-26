@@ -4,18 +4,18 @@ import { UserSessionTokenRepository } from '../repositories/user_session_token.r
 import { UserRepository } from '../repositories/user.repository';
 import { EnquiryRepository } from '../repositories/enquiry.repository';
 import { EducationRepository } from '../repositories/education.repository';
-import { WorkRepository } from 'src/repositories/work.repository';
+import { WorkRepository } from '../repositories/work.repository';
 
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { EnquiryService } from '../services/enquiry.service';
 import { EducationService } from '../services/education.service';
-import { WorkService } from 'src/services/work.service';
+import { WorkService } from '../services/work.service';
 
 import { UserController } from '../controllers/user.controller';
 import { EnquiryController } from '../controllers/enquiry.controller';
 import { EducationController } from '../controllers/education.controller';
-import { WorkController } from 'src/controllers/work.controller';
+import { WorkController } from '../controllers/work.controller';
 
 import dotenv from 'dotenv';
 
