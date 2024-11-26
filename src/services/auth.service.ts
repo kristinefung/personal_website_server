@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { UserRole, ApiStatusCode } from '../utils/enum';
 
 import { ApiError } from '../utils/err';
-import { UserSessionTokenRepository } from '../repositories/user_session_token.repository';
+import { UserSessionTokenRepository } from '../repositories/user_login_log.repository';
 import { UserRepository } from '../repositories/user.repository';
 
 const secretKey = process.env.JWT_SECRET_KEY || "";

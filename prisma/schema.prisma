@@ -32,7 +32,12 @@ model UserLoginLog {
   sessionToken String   @unique(map: "sessionToken_UNIQUE") @db.VarChar(500)
   loginAt      DateTime @default(now())
   logoutAt     DateTime
-  deleted      Int      @default(0) @db.TinyInt
+
+  createdAt DateTime @default(now())
+  createdBy Int      @default(0)
+  updatedAt DateTime @default(now())
+  updatedBy Int      @default(0)
+  deleted   Int      @default(0) @db.TinyInt
 }
 
 model Enquiry {

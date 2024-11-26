@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-import { UserSessionTokenRepository } from '../repositories/user_session_token.repository';
+import { UserSessionTokenRepository } from '../repositories/user_login_log.repository';
 import { UserRepository } from '../repositories/user.repository';
 import { EnquiryRepository } from '../repositories/enquiry.repository';
 import { EducationRepository } from '../repositories/education.repository';
