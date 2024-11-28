@@ -17,11 +17,11 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
         const createdUserLoginLog = await this.prismaClient.userLoginLog.create({
             data: {
                 userId: log.userId ?? 0,
-                ipAddress: log.ipAddress ?? '',
-                userAgent: log.userAgent ?? '',
-                sessionToken: log.sessionToken ?? '',
+                ipAddress: log.ipAddress,
+                userAgent: log.userAgent,
+                sessionToken: log.sessionToken,
                 loginAt: log.loginAt ?? new Date(),
-                logoutAt: log.logoutAt ?? '',
+                logoutAt: log.logoutAt,
 
                 createdAt: log.createdAt ?? new Date(),
                 createdBy: log.createdBy ?? 0,

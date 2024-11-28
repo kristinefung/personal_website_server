@@ -33,7 +33,9 @@ export class UserService implements IUserService {
         }
 
         // Step 2: Hash user password
-        user = await user.hashPassword();
+        const salt = genRandomString(20);
+        const hashedPassword = await this.authServ.hashPassword(user.password!, salt)
+        user = await user.hashPassword(hashedPassword, salt);
 
         // Step 4: Insert user into database
         const userRes = await this.userRepo.createUser(user);
@@ -82,7 +84,10 @@ export class UserService implements IUserService {
             throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
-        user = await user.verifyPassword(dbUser)
+        const correct = await this.authServ.verifyPassword(user.password!, dbUser.passwordSalt!, dbUser.hashedPassword!)
+        if (!correct) {
+            throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
+        }
 
         // Step 2: Generate user session token
         const token = await this.authServ.generateUserSessionToken(dbUser.id!);

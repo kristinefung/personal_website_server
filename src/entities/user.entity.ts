@@ -10,6 +10,7 @@ export class User {
     id?: number;
     email?: string;
     name?: string;
+    password?: string;
     hashedPassword?: string;
     passwordSalt?: string;
     roleId?: number;
@@ -27,18 +28,15 @@ export class User {
     hideSensitive(): User {
         const hiddenWord = "********";
 
+        this.password = hiddenWord;
         this.hashedPassword = hiddenWord;
         this.passwordSalt = hiddenWord;
         return this;
     }
 
-    async hashPassword(): Promise<User> {
-        const salt = genRandomString(20);
-        const pwWithSalt = this.hashedPassword! + salt;
-        const hashedPw = await bcrypt.hash(pwWithSalt, 10);
-
+    async hashPassword(hashedPassword: string, salt: string): Promise<User> {
         this.passwordSalt = salt;
-        this.hashedPassword = hashedPw;
+        this.hashedPassword = hashedPassword;
 
         return this;
     }
@@ -59,7 +57,7 @@ export class User {
             {
                 name: z.string({ required_error: "name is required" }).min(1, "name is required"),
                 email: z.string({ required_error: "email is required" }).email("Invalid email address"),
-                hashedPassword: z.string({ required_error: "hashedPassword is required" }).min(1, "hashedPassword is required"),
+                password: z.string({ required_error: "password is required" }).min(1, "password is required"),
             }
         ));
         Object.assign(this, user);
@@ -78,7 +76,7 @@ export class User {
             {
                 name: z.string().optional().nullable(),
                 email: z.string().email("Invalid email address").optional().nullable(),
-                hashedPassword: z.string().optional().nullable(),
+                plainPassword: z.string().optional().nullable(),
             }
         ));
         Object.assign(this, user);

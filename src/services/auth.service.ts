@@ -7,6 +7,8 @@ import { UserRepository } from '../repositories/user.repository';
 
 import { UserLoginLog } from '@prisma/client';
 
+import bcrypt from 'bcrypt';
+
 const secretKey = process.env.JWT_SECRET_KEY || "";
 
 type Payload = {
@@ -77,10 +79,25 @@ export class AuthService implements IAuthService {
 
         // Stpe 2: Save token to db
         const userLoginLog: Partial<UserLoginLog> = {
+            userId: userId,
             sessionToken: token
         }
         const dbUserLoginLog = await this.ustRepo.createUserLoginLog(userLoginLog);
 
         return token;
     };
+
+    async hashPassword(plainPassword: string, salt: string): Promise<string> {
+        const passwordWithSalt = plainPassword + salt;
+        const hashedPassword = await bcrypt.hash(passwordWithSalt, 10);
+
+        return hashedPassword;
+    }
+
+    async verifyPassword(plainPassword: string, salt: string, hashedPassword: string): Promise<boolean> {
+        const data = plainPassword + salt;
+        const correct = await bcrypt.compare(data, hashedPassword)
+
+        return correct
+    }
 }

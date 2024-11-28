@@ -24,14 +24,14 @@ model User {
 }
 
 model UserLoginLog {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   userId       Int
-  ipAddress    String
-  userAgent    String
-  failAttempts Int      @default(0)
-  sessionToken String   @unique(map: "sessionToken_UNIQUE") @db.VarChar(500)
-  loginAt      DateTime @default(now())
-  logoutAt     DateTime
+  ipAddress    String?
+  userAgent    String?
+  failAttempts Int       @default(0)
+  sessionToken String?   @unique(map: "sessionToken_UNIQUE") @db.VarChar(500)
+  loginAt      DateTime  @default(now())
+  logoutAt     DateTime?
 
   createdAt DateTime @default(now())
   createdBy Int      @default(0)
