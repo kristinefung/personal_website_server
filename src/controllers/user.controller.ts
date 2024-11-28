@@ -13,6 +13,7 @@ export interface IUserController {
     updateUserById(req: Request, res: Response): void;
 
     login(req: Request, res: Response): void;
+    verifyUserSessionToken(req: Request, res: Response): void;
 }
 
 export class UserController implements IUserController {
@@ -89,6 +90,15 @@ export class UserController implements IUserController {
             const userReq = new User(req.body);
             const token = await this.userServ.login(userReq);
             return jsonResponse(res, { user_session_token: token }, null);
+        } catch (err) {
+            return jsonResponse(res, {}, err);
+        }
+    }
+
+    async verifyUserSessionToken(req: Request, res: Response) {
+        try {
+            await this.authServ.authUser([], req.headers.authorization);
+            return jsonResponse(res, {}, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
         }

@@ -61,7 +61,7 @@ export class AuthService implements IAuthService {
         }
 
         // Step 4: Check user role has permission
-        if (!requiredRoleIds.includes(user.roleId!)) {
+        if (requiredRoleIds.length > 0 && !requiredRoleIds.includes(user.roleId!)) {
             console.error(`User role has no permission. Expected: ${requiredRoleIds}, Received: ${user.roleId}`);
             throw err;
         }

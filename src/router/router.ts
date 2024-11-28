@@ -18,6 +18,7 @@ router.get('/users', (req, res) => userCtlr.getAllUsers(req, res));
 router.delete('/users/:id', (req, res) => userCtlr.deleteUserById(req, res));
 router.put('/users/:id', (req, res) => userCtlr.updateUserById(req, res));
 router.post('/login', (req, res) => userCtlr.login(req, res));
+router.get('/verify-user-session-token', (req, res) => userCtlr.verifyUserSessionToken(req, res));
 
 /*************************************************************
  *                       Enquiry Module
