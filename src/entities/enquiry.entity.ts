@@ -25,7 +25,7 @@ export class Enquiry {
             {
                 name: z.string({ required_error: "name is required" }).min(1, "name is required"),
                 email: z.string({ required_error: "email is required" }).email("Invalid email address"),
-                company_name: z.string().optional().nullable(),
+                companyName: z.string().optional().nullable(),
                 phoneNo: z.string().optional().nullable(),
                 comment: z.string({ required_error: "comment is required" }).min(1, "comment is required"),
             }
