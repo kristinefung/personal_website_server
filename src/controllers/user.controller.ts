@@ -89,7 +89,7 @@ export class UserController implements IUserController {
         try {
             const userReq = new User(req.body);
             const token = await this.userServ.login(userReq);
-            return jsonResponse(res, { user_session_token: token }, null);
+            return jsonResponse(res, { userSessionToken: token }, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
         }

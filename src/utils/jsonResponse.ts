@@ -3,14 +3,14 @@ import { ApiStatusCode } from './enum';
 import * as Err from './err';
 
 type FormattedResponse = {
-    status_code: string,
+    statusCode: string,
     message: string,
     data: object
 }
 
-function formattedResponse(status_code: string, message: string, data: object): FormattedResponse {
+function formattedResponse(statusCode: string, message: string, data: object): FormattedResponse {
     return {
-        status_code: status_code,
+        statusCode: statusCode,
         message: message,
         data: data
     };
