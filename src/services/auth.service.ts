@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { UserRole, ApiStatusCode } from '../utils/enum';
-
+import { ApiStatusCode } from '../utils/enum';
+import { UserRole } from '@prisma/client';
 import { ApiError } from '../utils/err';
 import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
 import { UserRepository } from '../repositories/user.repository';
@@ -17,7 +17,7 @@ type Payload = {
 }
 
 export interface IAuthService {
-    authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<void>;
+    authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<number>;
     generateUserSessionToken(userId: number): Promise<string>;
 }
 
@@ -27,7 +27,7 @@ export class AuthService implements IAuthService {
         private userRepo: UserRepository
     ) { }
 
-    async authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<void> {
+    async authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<number> {
         const err = new ApiError("User has no permission", ApiStatusCode.UNAUTHORIZED, 401);
 
         // Step 1: Check is valid bear token
@@ -61,11 +61,12 @@ export class AuthService implements IAuthService {
         }
 
         // Step 4: Check user role has permission
-        if (requiredRoleIds.length > 0 && !requiredRoleIds.includes(user.roleId!)) {
+        if (requiredRoleIds.length > 0 && !requiredRoleIds.includes(user.roleId)) {
             console.error(`User role has no permission. Expected: ${requiredRoleIds}, Received: ${user.roleId}`);
             throw err;
         }
 
+        return user.id;
     }
 
     async generateUserSessionToken(userId: number): Promise<string> {

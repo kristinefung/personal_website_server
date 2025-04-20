@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { jsonResponse } from '../utils/jsonResponse';
-import { User } from '../entities/user.entity';
-import { UserRole } from '../utils/enum';
+import { UserRole } from '@prisma/client';
+import { CreateUserRequestDto, GetUserByIdRequestDto, GetAllUsersRequestDto, DeleteUserRequestDto, UpdateUserByIdRequestDto, LoginRequestDto } from '../dtos/user.dto';
+
 
 export interface IUserController {
     createUser(req: Request, res: Response): void;
@@ -13,7 +14,6 @@ export interface IUserController {
     updateUserById(req: Request, res: Response): void;
 
     login(req: Request, res: Response): void;
-    verifyUserSessionToken(req: Request, res: Response): void;
 }
 
 export class UserController implements IUserController {
@@ -23,9 +23,11 @@ export class UserController implements IUserController {
     ) { }
     async createUser(req: Request, res: Response) {
         try {
+            const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+
             // Step 1: Call service to handle business logic
-            const userReq = new User(req.body);
-            const createdUser = await this.userServ.createUser(userReq);
+            const userReq = new CreateUserRequestDto(req.body);
+            const createdUser = await this.userServ.createUser(userReq, actionUserId);
 
             // Step 2: return success response
             return jsonResponse(res, { user: createdUser }, null);
@@ -40,7 +42,8 @@ export class UserController implements IUserController {
 
             // Step 1: Call service to handle business logic
             const userId = parseInt(req.params.id);
-            const user = await this.userServ.getUserById(userId);
+            const userReq = new GetUserByIdRequestDto({ id: userId });
+            const user = await this.userServ.getUserById(userReq);
 
             // Step 2: return success response
             return jsonResponse(res, { user: user }, null);
@@ -53,7 +56,8 @@ export class UserController implements IUserController {
         try {
             await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
-            const users = await this.userServ.getAllUsers();
+            const usersReq = new GetAllUsersRequestDto(req.body);
+            const users = await this.userServ.getAllUsers(usersReq);
             return jsonResponse(res, { users: users }, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
@@ -62,10 +66,11 @@ export class UserController implements IUserController {
 
     async deleteUserById(req: Request, res: Response) {
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+            const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
             const userId = parseInt(req.params.id);
-            await this.userServ.deleteUserById(userId);
+            const deleteUserReq = new DeleteUserRequestDto({ id: userId });
+            await this.userServ.deleteUserById(deleteUserReq, actionUserId);
             return jsonResponse(res, {}, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
@@ -74,11 +79,11 @@ export class UserController implements IUserController {
 
     async updateUserById(req: Request, res: Response) {
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+            const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
-            const userReq = new User(req.body);
             const userId = parseInt(req.params.id);
-            const user = await this.userServ.updateUserById(userId, userReq);
+            const updateUserReq = new UpdateUserByIdRequestDto({ id: userId, user: req.body });
+            const user = await this.userServ.updateUserById(updateUserReq, actionUserId);
             return jsonResponse(res, { user: user }, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
@@ -87,21 +92,11 @@ export class UserController implements IUserController {
 
     async login(req: Request, res: Response) {
         try {
-            const userReq = new User(req.body);
-            const token = await this.userServ.login(userReq);
+            const loginReq = new LoginRequestDto(req.body);
+            const token = await this.userServ.login(loginReq);
             return jsonResponse(res, { userSessionToken: token }, null);
         } catch (err) {
             return jsonResponse(res, {}, err);
         }
     }
-
-    async verifyUserSessionToken(req: Request, res: Response) {
-        try {
-            await this.authServ.authUser([], req.headers.authorization);
-            return jsonResponse(res, {}, null);
-        } catch (err) {
-            return jsonResponse(res, {}, err);
-        }
-    }
-
 }

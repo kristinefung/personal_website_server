@@ -44,7 +44,7 @@ model User {
   createdBy Int       @default(0)
   updatedAt DateTime?
   updatedBy Int?
-  deleted   Int       @default(0) @db.TinyInt
+  deleted   Int?      @default(0) @db.TinyInt
 
   creator User  @relation("UserCreatedBy", fields: [createdBy], references: [id])
   updater User? @relation("UserUpdatedBy", fields: [updatedBy], references: [id])
@@ -80,7 +80,7 @@ model UserLoginLog {
   createdBy Int       @default(0)
   updatedAt DateTime?
   updatedBy Int?
-  deleted   Int       @default(0) @db.TinyInt
+  deleted   Int?      @default(0) @db.TinyInt
 
   user    User  @relation(fields: [userId], references: [id])
   creator User  @relation("LoginLogCreatedBy", fields: [createdBy], references: [id])
@@ -100,7 +100,7 @@ model Enquiry {
   createdBy Int       @default(0)
   updatedAt DateTime?
   updatedBy Int?
-  deleted   Int       @default(0) @db.TinyInt
+  deleted   Int?      @default(0) @db.TinyInt
 
   creator User  @relation("EnquiryCreatedBy", fields: [createdBy], references: [id])
   updater User? @relation("EnquiryUpdatedBy", fields: [updatedBy], references: [id])
@@ -118,14 +118,14 @@ model Education {
   endYear     Int?
   isCurrent   Int    @db.TinyInt
 
-  createdAt DateTime @default(now())
-  createdBy Int      @default(0)
-  updatedAt DateTime @default(now())
-  updatedBy Int      @default(0)
-  deleted   Int      @default(0) @db.TinyInt
+  createdAt DateTime  @default(now())
+  createdBy Int       @default(0)
+  updatedAt DateTime? @default(now())
+  updatedBy Int?      @default(0)
+  deleted   Int?      @default(0) @db.TinyInt
 
-  creator User @relation("EducationCreatedBy", fields: [createdBy], references: [id])
-  updater User @relation("EducationUpdatedBy", fields: [updatedBy], references: [id])
+  creator User  @relation("EducationCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("EducationUpdatedBy", fields: [updatedBy], references: [id])
 }
 
 model Work {
@@ -143,7 +143,7 @@ model Work {
   createdBy Int       @default(0)
   updatedAt DateTime?
   updatedBy Int?
-  deleted   Int       @default(0) @db.TinyInt
+  deleted   Int?      @default(0) @db.TinyInt
 
   creator User  @relation("WorkCreatedBy", fields: [createdBy], references: [id])
   updater User? @relation("WorkUpdatedBy", fields: [updatedBy], references: [id])
