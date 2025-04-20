@@ -1,12 +1,18 @@
-import { PrismaClient } from '@prisma/client';
-import { Education } from '../entities/education.entity';
+import { PrismaClient, Education } from '@prisma/client';
+
+export type EducationQueryParams = {
+    offset?: number;
+    limit?: number;
+    orderBy?: keyof Education;
+    orderDirection?: 'asc' | 'desc';
+}
 
 export interface IEducationRepository {
-    createEducation(education: Education): Promise<Education>;
+    createEducation(education: Partial<Education>): Promise<number>;
+    getAllEducations(params?: EducationQueryParams): Promise<{ educations: Education[], total: number }>;
     getEducationById(id: number): Promise<Education | null>;
-    getAllEducations(): Promise<Education[]>;
     deleteEducationById(id: number): Promise<void>;
-    updateEducationById(id: number, education: Education): Promise<Education>;
+    updateEducationById(id: number, education: Partial<Education>): Promise<Education>;
 }
 
 export class EducationRepository implements IEducationRepository {
@@ -14,56 +20,49 @@ export class EducationRepository implements IEducationRepository {
         private prismaClient: PrismaClient
     ) { }
 
-    async createEducation(education: Education): Promise<Education> {
+    async createEducation(education: Partial<Education>): Promise<number> {
         const createdEducation = await this.prismaClient.education.create({
             data: {
-                degree: education.degree ?? "",
-                subject: education.subject ?? "",
-                schoolName: education.schoolName ?? "",
-                description: education.description ?? "",
-                startMonth: education.startMonth ?? 0,
-                startYear: education.startMonth ?? 0,
-                endMonth: education.endMonth ?? 0,
-                endYear: education.endYear ?? 0,
-                isCurrent: education.isCurrent ?? 0,
-
-                createdAt: education.createdAt ?? new Date(),
-                createdBy: education.createdBy ?? 0,
-                updatedAt: education.updatedAt ?? new Date(),
-                updatedBy: education.updatedBy ?? 0,
-                deleted: education.deleted ?? 0,
-            },
-        });
-
-        return new Education(createdEducation);
-    }
-
-    async updateEducationById(id: number, education: Education): Promise<Education> {
-        const updatedEducation = await this.prismaClient.education.update({
-            where: {
-                id: id,
+                degree: education.degree!,
+                subject: education.subject!,
+                schoolName: education.schoolName!,
+                description: education.description!,
+                startMonth: education.startMonth!,
+                startYear: education.startYear!,
+                endMonth: education.endMonth,
+                endYear: education.endYear,
+                isCurrent: education.isCurrent!,
+                createdAt: new Date(),
+                createdBy: education.createdBy!,
                 deleted: 0,
             },
-            data: {
-                degree: education.degree ?? undefined,
-                subject: education.subject ?? undefined,
-                schoolName: education.schoolName ?? undefined,
-                description: education.description ?? undefined,
-                startMonth: education.startMonth ?? undefined,
-                startYear: education.startYear ?? undefined,
-                endMonth: education.endMonth ?? undefined,
-                endYear: education.endYear ?? undefined,
-                isCurrent: education.isCurrent ?? undefined,
-
-                createdAt: education.createdAt ?? undefined,
-                createdBy: education.createdBy ?? undefined,
-                updatedAt: education.updatedAt ?? undefined,
-                updatedBy: education.updatedBy ?? undefined,
-                deleted: education.deleted ?? undefined,
-            },
         });
 
-        return new Education(updatedEducation);
+        return createdEducation.id;
+    }
+
+    async getAllEducations(params?: EducationQueryParams): Promise<{ educations: Education[], total: number }> {
+        const where = {
+            deleted: 0
+        };
+
+        const educations = await this.prismaClient.education.findMany({
+            where: where,
+            skip: params?.offset,
+            take: params?.limit,
+            orderBy: params?.orderBy ? {
+                [params.orderBy]: params.orderDirection || 'asc'
+            } : undefined,
+        });
+
+        const total = await this.prismaClient.education.count({
+            where: where,
+        });
+
+        return {
+            educations: educations,
+            total: total,
+        };
     }
 
     async getEducationById(id: number): Promise<Education | null> {
@@ -73,20 +72,11 @@ export class EducationRepository implements IEducationRepository {
                 deleted: 0
             },
         });
-        return education ? new Education(education) : null;
-    }
-
-    async getAllEducations(): Promise<Education[]> {
-        const educations = await this.prismaClient.education.findMany({
-            where: {
-                deleted: 0
-            },
-        });
-        return educations.map(education => new Education(education));
+        return education;
     }
 
     async deleteEducationById(id: number): Promise<void> {
-        const education = await this.prismaClient.education.update({
+        await this.prismaClient.education.update({
             where: {
                 id: id,
                 deleted: 0
@@ -96,5 +86,29 @@ export class EducationRepository implements IEducationRepository {
             },
         });
         return;
+    }
+
+    async updateEducationById(id: number, education: Partial<Education>): Promise<Education> {
+        const updatedEducation = await this.prismaClient.education.update({
+            where: {
+                id: id,
+                deleted: 0,
+            },
+            data: {
+                degree: education.degree,
+                subject: education.subject,
+                schoolName: education.schoolName,
+                description: education.description,
+                startMonth: education.startMonth,
+                startYear: education.startYear,
+                endMonth: education.endMonth,
+                endYear: education.endYear,
+                isCurrent: education.isCurrent,
+                updatedAt: new Date(),
+                updatedBy: education.updatedBy,
+            },
+        });
+
+        return updatedEducation;
     }
 }
