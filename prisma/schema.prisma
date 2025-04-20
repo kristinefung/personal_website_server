@@ -7,20 +7,63 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum UserRole {
+  ADMIN
+  USER
+  DEMO
+  SYSTEM
+}
+
+enum UserStatus {
+  ACTIVE
+  UNVERIFIED
+  PENDING
+  SUSPENDED
+  BANNED
+  LOCKED
+  DELETED
+}
+
+enum EnquiryStatus {
+  UNHANDLED
+  HANDLED
+  IGNORED
+}
+
 model User {
-  id             Int    @id @default(autoincrement())
-  email          String @unique(map: "email_UNIQUE")
+  id             Int        @id @default(autoincrement())
+  email          String     @unique(map: "email_UNIQUE")
   name           String
   hashedPassword String
   passwordSalt   String
-  roleId         Int
-  statusId       Int
+  roleId         UserRole
+  statusId       UserStatus
 
-  createdAt DateTime @default(now())
-  createdBy Int      @default(0)
-  updatedAt DateTime @default(now())
-  updatedBy Int      @default(0)
-  deleted   Int      @default(0) @db.TinyInt
+  // This record's audit trail
+  createdAt DateTime  @default(now())
+  createdBy Int       @default(0)
+  updatedAt DateTime?
+  updatedBy Int?
+  deleted   Int       @default(0) @db.TinyInt
+
+  creator User  @relation("UserCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("UserUpdatedBy", fields: [updatedBy], references: [id])
+
+  loginLogs UserLoginLog[]
+
+  // Records created by this user
+  createdLoginLogs  UserLoginLog[] @relation("LoginLogCreatedBy")
+  createdEnquiries  Enquiry[]      @relation("EnquiryCreatedBy")
+  createdEducations Education[]    @relation("EducationCreatedBy")
+  createdWorks      Work[]         @relation("WorkCreatedBy")
+  createdUsers      User[]         @relation("UserCreatedBy")
+
+  // Records updated by this user
+  updatedLoginLogs  UserLoginLog[] @relation("LoginLogUpdatedBy")
+  updatedEnquiries  Enquiry[]      @relation("EnquiryUpdatedBy")
+  updatedEducations Education[]    @relation("EducationUpdatedBy")
+  updatedWorks      Work[]         @relation("WorkUpdatedBy")
+  updatedUsers      User[]         @relation("UserUpdatedBy")
 }
 
 model UserLoginLog {
@@ -33,27 +76,34 @@ model UserLoginLog {
   loginAt      DateTime  @default(now())
   logoutAt     DateTime?
 
-  createdAt DateTime @default(now())
-  createdBy Int      @default(0)
-  updatedAt DateTime @default(now())
-  updatedBy Int      @default(0)
-  deleted   Int      @default(0) @db.TinyInt
+  createdAt DateTime  @default(now())
+  createdBy Int       @default(0)
+  updatedAt DateTime?
+  updatedBy Int?
+  deleted   Int       @default(0) @db.TinyInt
+
+  user    User  @relation(fields: [userId], references: [id])
+  creator User  @relation("LoginLogCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("LoginLogUpdatedBy", fields: [updatedBy], references: [id])
 }
 
 model Enquiry {
-  id          Int    @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   name        String
   email       String
-  companyName String
-  phoneNo     String
-  comment     String @db.VarChar(2000)
-  statusId    Int
+  companyName String?
+  phoneNo     String?
+  comment     String        @db.VarChar(2000)
+  statusId    EnquiryStatus
 
-  createdAt DateTime @default(now())
-  createdBy Int      @default(0)
-  updatedAt DateTime @default(now())
-  updatedBy Int      @default(0)
-  deleted   Int      @default(0) @db.TinyInt
+  createdAt DateTime  @default(now())
+  createdBy Int       @default(0)
+  updatedAt DateTime?
+  updatedBy Int?
+  deleted   Int       @default(0) @db.TinyInt
+
+  creator User  @relation("EnquiryCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("EnquiryUpdatedBy", fields: [updatedBy], references: [id])
 }
 
 model Education {
@@ -64,8 +114,8 @@ model Education {
   description String @db.VarChar(2000)
   startMonth  Int
   startYear   Int
-  endMonth    Int
-  endYear     Int
+  endMonth    Int?
+  endYear     Int?
   isCurrent   Int    @db.TinyInt
 
   createdAt DateTime @default(now())
@@ -73,6 +123,9 @@ model Education {
   updatedAt DateTime @default(now())
   updatedBy Int      @default(0)
   deleted   Int      @default(0) @db.TinyInt
+
+  creator User @relation("EducationCreatedBy", fields: [createdBy], references: [id])
+  updater User @relation("EducationUpdatedBy", fields: [updatedBy], references: [id])
 }
 
 model Work {
@@ -82,13 +135,16 @@ model Work {
   description String @db.VarChar(2000)
   startMonth  Int
   startYear   Int
-  endMonth    Int
-  endYear     Int
+  endMonth    Int?
+  endYear     Int?
   isCurrent   Int    @db.TinyInt
 
-  createdAt DateTime @default(now())
-  createdBy Int      @default(0)
-  updatedAt DateTime @default(now())
-  updatedBy Int      @default(0)
-  deleted   Int      @default(0) @db.TinyInt
+  createdAt DateTime  @default(now())
+  createdBy Int       @default(0)
+  updatedAt DateTime?
+  updatedBy Int?
+  deleted   Int       @default(0) @db.TinyInt
+
+  creator User  @relation("WorkCreatedBy", fields: [createdBy], references: [id])
+  updater User? @relation("WorkUpdatedBy", fields: [updatedBy], references: [id])
 }
