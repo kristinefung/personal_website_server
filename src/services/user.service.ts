@@ -1,6 +1,5 @@
 import { UserRepository } from '../repositories/user.repository';
 import { AuthService } from './auth.service';
-import { User } from '../entities/user.entity';
 import { CreateUserRequestDto, CreateUserResponseDto, GetUserByIdRequestDto, GetUserByIdResponseDto, GetAllUsersRequestDto, GetAllUsersResponseDto, DeleteUserRequestDto, DeleteUserResponseDto, UpdateUserByIdRequestDto, UpdateUserByIdResponseDto, LoginRequestDto, LoginResponseDto } from '../dtos/user.dto';
 
 import { ApiError } from '../utils/err';
