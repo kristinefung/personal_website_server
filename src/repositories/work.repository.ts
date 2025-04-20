@@ -1,12 +1,18 @@
-import { PrismaClient } from '@prisma/client';
-import { Work } from '../entities/work.entity';
+import { PrismaClient, Work } from '@prisma/client';
+
+export type WorkQueryParams = {
+    offset?: number;
+    limit?: number;
+    orderBy?: keyof Work;
+    orderDirection?: 'asc' | 'desc';
+}
 
 export interface IWorkRepository {
-    createWork(work: Work): Promise<Work>;
+    createWork(work: Partial<Work>): Promise<number>;
+    getAllWorks(params?: WorkQueryParams): Promise<{ works: Work[], total: number }>;
     getWorkById(id: number): Promise<Work | null>;
-    getAllWorks(): Promise<Work[]>;
     deleteWorkById(id: number): Promise<void>;
-    updateWorkById(id: number, work: Work): Promise<Work>;
+    updateWorkById(id: number, work: Partial<Work>): Promise<Work>;
 }
 
 export class WorkRepository implements IWorkRepository {
@@ -14,54 +20,48 @@ export class WorkRepository implements IWorkRepository {
         private prismaClient: PrismaClient
     ) { }
 
-    async createWork(work: Work): Promise<Work> {
+    async createWork(work: Partial<Work>): Promise<number> {
         const createdWork = await this.prismaClient.work.create({
             data: {
-                title: work.title ?? "",
-                companyName: work.companyName ?? "",
-                description: work.description ?? "",
-                startMonth: work.startMonth ?? 0,
-                startYear: work.startYear ?? 0,
-                endMonth: work.endMonth ?? 0,
-                endYear: work.endYear ?? 0,
-                isCurrent: work.isCurrent ?? 0,
-
-                createdAt: work.createdAt ?? new Date(),
-                createdBy: work.createdBy ?? 0,
-                updatedAt: work.updatedAt ?? new Date(),
-                updatedBy: work.updatedBy ?? 0,
-                deleted: work.deleted ?? 0,
-            },
-        });
-
-        return new Work(createdWork);
-    }
-
-    async updateWorkById(id: number, work: Work): Promise<Work> {
-        const updatedWork = await this.prismaClient.work.update({
-            where: {
-                id: id,
+                title: work.title!,
+                companyName: work.companyName!,
+                description: work.description!,
+                startMonth: work.startMonth!,
+                startYear: work.startYear!,
+                endMonth: work.endMonth,
+                endYear: work.endYear,
+                isCurrent: work.isCurrent!,
+                createdAt: new Date(),
+                createdBy: work.createdBy!,
                 deleted: 0,
             },
-            data: {
-                title: work.title ?? undefined,
-                companyName: work.companyName ?? undefined,
-                description: work.description ?? undefined,
-                startMonth: work.startMonth ?? undefined,
-                startYear: work.startYear ?? undefined,
-                endMonth: work.endMonth ?? undefined,
-                endYear: work.endYear ?? undefined,
-                isCurrent: work.isCurrent ?? undefined,
-
-                createdAt: work.createdAt ?? undefined,
-                createdBy: work.createdBy ?? undefined,
-                updatedAt: work.updatedAt ?? undefined,
-                updatedBy: work.updatedBy ?? undefined,
-                deleted: work.deleted ?? undefined,
-            },
         });
 
-        return new Work(updatedWork);
+        return createdWork.id;
+    }
+
+    async getAllWorks(params?: WorkQueryParams): Promise<{ works: Work[], total: number }> {
+        const where = {
+            deleted: 0
+        };
+
+        const works = await this.prismaClient.work.findMany({
+            where: where,
+            skip: params?.offset,
+            take: params?.limit,
+            orderBy: params?.orderBy ? {
+                [params.orderBy]: params.orderDirection || 'asc'
+            } : undefined,
+        });
+
+        const total = await this.prismaClient.work.count({
+            where: where,
+        });
+
+        return {
+            works: works,
+            total: total,
+        };
     }
 
     async getWorkById(id: number): Promise<Work | null> {
@@ -71,20 +71,11 @@ export class WorkRepository implements IWorkRepository {
                 deleted: 0
             },
         });
-        return work ? new Work(work) : null;
-    }
-
-    async getAllWorks(): Promise<Work[]> {
-        const works = await this.prismaClient.work.findMany({
-            where: {
-                deleted: 0
-            },
-        });
-        return works.map(work => new Work(work));
+        return work;
     }
 
     async deleteWorkById(id: number): Promise<void> {
-        const work = await this.prismaClient.work.update({
+        await this.prismaClient.work.update({
             where: {
                 id: id,
                 deleted: 0
@@ -94,5 +85,28 @@ export class WorkRepository implements IWorkRepository {
             },
         });
         return;
+    }
+
+    async updateWorkById(id: number, work: Partial<Work>): Promise<Work> {
+        const updatedWork = await this.prismaClient.work.update({
+            where: {
+                id: id,
+                deleted: 0,
+            },
+            data: {
+                title: work.title,
+                companyName: work.companyName,
+                description: work.description,
+                startMonth: work.startMonth,
+                startYear: work.startYear,
+                endMonth: work.endMonth,
+                endYear: work.endYear,
+                isCurrent: work.isCurrent,
+                updatedAt: new Date(),
+                updatedBy: work.updatedBy,
+            },
+        });
+
+        return updatedWork;
     }
 }
