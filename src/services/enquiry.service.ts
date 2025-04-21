@@ -1,8 +1,8 @@
-import { EnquiryRepository } from '../repositories/enquiry.repository';
+import { EnquiryRepository } from 'src/repositories/enquiry.repository';
 import { Enquiry, EnquiryStatus } from '@prisma/client';
-import { CreateEnquiryRequestDto, CreateEnquiryResponseDto, GetEnquiryByIdRequestDto, GetEnquiryByIdResponseDto, GetAllEnquiriesRequestDto, GetAllEnquiriesResponseDto, DeleteEnquiryRequestDto, DeleteEnquiryResponseDto, UpdateEnquiryByIdRequestDto, UpdateEnquiryByIdResponseDto } from '../dtos/enquiry.dto';
-import { ApiError } from '../utils/err';
-import { ApiStatusCode } from '../utils/enum';
+import { CreateEnquiryRequestDto, CreateEnquiryResponseDto, GetEnquiryByIdRequestDto, GetEnquiryByIdResponseDto, GetAllEnquiriesRequestDto, GetAllEnquiriesResponseDto, DeleteEnquiryRequestDto, DeleteEnquiryResponseDto, UpdateEnquiryByIdRequestDto, UpdateEnquiryByIdResponseDto } from 'src/dtos/enquiry.dto';
+import { ApiError } from 'src/utils/err';
+import { ApiStatusCode } from 'src/utils/enum';
 
 export interface IEnquiryService {
     createEnquiry(req: CreateEnquiryRequestDto, actionUserId: number): Promise<CreateEnquiryResponseDto>;

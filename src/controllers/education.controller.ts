@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
-import { EducationService } from '../services/education.service';
-import { AuthService } from '../services/auth.service';
-import { jsonResponse } from '../utils/jsonResponse';
+import { EducationService } from 'src/services/education.service';
+import { AuthService } from 'src/services/auth.service';
+import { jsonResponse } from 'src/utils/jsonResponse';
 import { UserRole } from '@prisma/client';
-import { CreateEducationRequestDto, GetEducationByIdRequestDto, GetAllEducationsRequestDto, DeleteEducationRequestDto, UpdateEducationByIdRequestDto } from '../dtos/education.dto';
+import { CreateEducationRequestDto, GetEducationByIdRequestDto, GetAllEducationsRequestDto, DeleteEducationRequestDto, UpdateEducationByIdRequestDto } from 'src/dtos/education.dto';
 
 export interface IEducationController {
     createEducation(req: Request, res: Response): void;

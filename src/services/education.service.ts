@@ -1,8 +1,8 @@
-import { EducationRepository } from '../repositories/education.repository';
-import { CreateEducationRequestDto, CreateEducationResponseDto, GetEducationByIdRequestDto, GetEducationByIdResponseDto, GetAllEducationsRequestDto, GetAllEducationsResponseDto, DeleteEducationRequestDto, DeleteEducationResponseDto, UpdateEducationByIdRequestDto, UpdateEducationByIdResponseDto } from '../dtos/education.dto';
+import { EducationRepository } from 'src/repositories/education.repository';
+import { CreateEducationRequestDto, CreateEducationResponseDto, GetEducationByIdRequestDto, GetEducationByIdResponseDto, GetAllEducationsRequestDto, GetAllEducationsResponseDto, DeleteEducationRequestDto, DeleteEducationResponseDto, UpdateEducationByIdRequestDto, UpdateEducationByIdResponseDto } from 'src/dtos/education.dto';
 
-import { ApiError } from '../utils/err';
-import { ApiStatusCode } from '../utils/enum';
+import { ApiError } from 'src/utils/err';
+import { ApiStatusCode } from 'src/utils/enum';
 
 export interface IEducationService {
     createEducation(req: CreateEducationRequestDto, actionUserId: number): Promise<CreateEducationResponseDto>;

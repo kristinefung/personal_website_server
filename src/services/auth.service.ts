@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
-import { ApiStatusCode } from '../utils/enum';
+import { ApiStatusCode } from 'src/utils/enum';
 import { UserRole } from '@prisma/client';
-import { ApiError } from '../utils/err';
-import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
-import { UserRepository } from '../repositories/user.repository';
+import { ApiError } from 'src/utils/err';
+import { UserLoginLogRepository } from 'src/repositories/user_login_log.repository';
+import { UserRepository } from 'src/repositories/user.repository';
 
 const secretKey = process.env.JWT_SECRET_KEY || "";
 

@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
-import { EnquiryService } from '../services/enquiry.service';
-import { AuthService } from '../services/auth.service';
-import { jsonResponse } from '../utils/jsonResponse';
+import { EnquiryService } from 'src/services/enquiry.service';
+import { AuthService } from 'src/services/auth.service';
+import { jsonResponse } from 'src/utils/jsonResponse';
 import { UserRole, Enquiry } from '@prisma/client';
-import { CreateEnquiryRequestDto, GetEnquiryByIdRequestDto, GetAllEnquiriesRequestDto, DeleteEnquiryRequestDto, UpdateEnquiryByIdRequestDto } from '../dtos/enquiry.dto';
+import { CreateEnquiryRequestDto, GetEnquiryByIdRequestDto, GetAllEnquiriesRequestDto, DeleteEnquiryRequestDto, UpdateEnquiryByIdRequestDto } from 'src/dtos/enquiry.dto';
 
 export interface IEnquiryController {
     createEnquiry(req: Request, res: Response): void;

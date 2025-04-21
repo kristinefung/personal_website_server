@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
-import { WorkService } from '../services/work.service';
-import { AuthService } from '../services/auth.service';
-import { jsonResponse } from '../utils/jsonResponse';
+import { WorkService } from 'src/services/work.service';
+import { AuthService } from 'src/services/auth.service';
+import { jsonResponse } from 'src/utils/jsonResponse';
 import { UserRole } from '@prisma/client';
-import { CreateWorkRequestDto, GetWorkByIdRequestDto, GetAllWorksRequestDto, DeleteWorkRequestDto, UpdateWorkByIdRequestDto } from '../dtos/work.dto';
+import { CreateWorkRequestDto, GetWorkByIdRequestDto, GetAllWorksRequestDto, DeleteWorkRequestDto, UpdateWorkByIdRequestDto } from 'src/dtos/work.dto';
 
 export interface IWorkController {
     createWork(req: Request, res: Response): void;

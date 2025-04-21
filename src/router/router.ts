@@ -1,5 +1,5 @@
 import express from 'express';
-import { IoCContainer } from '../ioc/ioc_container';
+import { IoCContainer } from 'src/ioc/ioc_container';
 
 const iocContainer = new IoCContainer();
 const userCtlr = iocContainer.getUserController();

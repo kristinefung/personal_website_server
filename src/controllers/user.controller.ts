@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
-import { UserService } from '../services/user.service';
-import { AuthService } from '../services/auth.service';
-import { jsonResponse } from '../utils/jsonResponse';
+import { UserService } from 'src/services/user.service';
+import { AuthService } from 'src/services/auth.service';
+import { jsonResponse } from 'src/utils/jsonResponse';
 import { UserRole } from '@prisma/client';
-import { CreateUserRequestDto, GetUserByIdRequestDto, GetAllUsersRequestDto, DeleteUserRequestDto, UpdateUserByIdRequestDto, LoginRequestDto } from '../dtos/user.dto';
+import { CreateUserRequestDto, GetUserByIdRequestDto, GetAllUsersRequestDto, DeleteUserRequestDto, UpdateUserByIdRequestDto, LoginRequestDto } from 'src/dtos/user.dto';
 
 
 export interface IUserController {

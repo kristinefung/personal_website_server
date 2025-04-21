@@ -2,9 +2,9 @@ import { UserRepository } from '../repositories/user.repository';
 import { AuthService } from './auth.service';
 import { CreateUserRequestDto, CreateUserResponseDto, GetUserByIdRequestDto, GetUserByIdResponseDto, GetAllUsersRequestDto, GetAllUsersResponseDto, DeleteUserRequestDto, DeleteUserResponseDto, UpdateUserByIdRequestDto, UpdateUserByIdResponseDto, LoginRequestDto, LoginResponseDto } from '../dtos/user.dto';
 
-import { ApiError } from '../utils/err';
-import { genRandomString } from '../utils/common';
-import { ApiStatusCode } from '../utils/enum';
+import { ApiError } from 'src/utils/err';
+import { genRandomString } from 'src/utils/common';
+import { ApiStatusCode } from 'src/utils/enum';
 import { hashPassword, verifyPassword, generateUserSessionToken } from 'src/utils/security';
 import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
 

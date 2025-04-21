@@ -1,8 +1,8 @@
-import { WorkRepository } from '../repositories/work.repository';
-import { CreateWorkRequestDto, CreateWorkResponseDto, GetWorkByIdRequestDto, GetWorkByIdResponseDto, GetAllWorksRequestDto, GetAllWorksResponseDto, DeleteWorkRequestDto, DeleteWorkResponseDto, UpdateWorkByIdRequestDto, UpdateWorkByIdResponseDto } from '../dtos/work.dto';
+import { WorkRepository } from 'src/repositories/work.repository';
+import { CreateWorkRequestDto, CreateWorkResponseDto, GetWorkByIdRequestDto, GetWorkByIdResponseDto, GetAllWorksRequestDto, GetAllWorksResponseDto, DeleteWorkRequestDto, DeleteWorkResponseDto, UpdateWorkByIdRequestDto, UpdateWorkByIdResponseDto } from 'src/dtos/work.dto';
 
-import { ApiError } from '../utils/err';
-import { ApiStatusCode } from '../utils/enum';
+import { ApiError } from 'src/utils/err';
+import { ApiStatusCode } from 'src/utils/enum';
 
 export interface IWorkService {
     createWork(req: CreateWorkRequestDto, actionUserId: number): Promise<CreateWorkResponseDto>;

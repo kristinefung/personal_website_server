@@ -1,21 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 
-import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
-import { UserRepository } from '../repositories/user.repository';
-import { EnquiryRepository } from '../repositories/enquiry.repository';
-import { EducationRepository } from '../repositories/education.repository';
-import { WorkRepository } from '../repositories/work.repository';
+import { UserLoginLogRepository } from 'src/repositories/user_login_log.repository';
+import { UserRepository } from 'src/repositories/user.repository';
+import { EnquiryRepository } from 'src/repositories/enquiry.repository';
+import { EducationRepository } from 'src/repositories/education.repository';
+import { WorkRepository } from 'src/repositories/work.repository';
 
-import { UserService } from '../services/user.service';
-import { AuthService } from '../services/auth.service';
-import { EnquiryService } from '../services/enquiry.service';
-import { EducationService } from '../services/education.service';
-import { WorkService } from '../services/work.service';
+import { UserService } from 'src/services/user.service';
+import { AuthService } from 'src/services/auth.service';
+import { EnquiryService } from 'src/services/enquiry.service';
+import { EducationService } from 'src/services/education.service';
+import { WorkService } from 'src/services/work.service';
 
-import { UserController } from '../controllers/user.controller';
-import { EnquiryController } from '../controllers/enquiry.controller';
-import { EducationController } from '../controllers/education.controller';
-import { WorkController } from '../controllers/work.controller';
+import { UserController } from 'src/controllers/user.controller';
+import { EnquiryController } from 'src/controllers/enquiry.controller';
+import { EducationController } from 'src/controllers/education.controller';
+import { WorkController } from 'src/controllers/work.controller';
 
 import dotenv from 'dotenv';
 
