@@ -39,7 +39,6 @@ export class WorkController implements IWorkController {
     async getWorkById(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
             // Step 1: Call service to handle business logic
             const workId = parseInt(req.params.id);
@@ -56,7 +55,6 @@ export class WorkController implements IWorkController {
     async getAllWorks(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
             const worksReq = new GetAllWorksRequestDto(req.body);
             const works = await this.workServ.getAllWorks(worksReq);

@@ -41,7 +41,7 @@ export class UserController implements IUserController {
     async getUserById(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+            const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
             // Step 1: Call service to handle business logic
             const userId = parseInt(req.params.id);
@@ -58,7 +58,7 @@ export class UserController implements IUserController {
     async getAllUsers(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+            const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
             const usersReq = new GetAllUsersRequestDto(req.body);
             const users = await this.userServ.getAllUsers(usersReq);

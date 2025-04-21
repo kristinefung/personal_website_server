@@ -40,6 +40,8 @@ export class EnquiryController implements IEnquiryController {
     async getEnquiryById(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
+            const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+
             // Step 1: Create get enquiry request DTO
             const enquiryReq = new GetEnquiryByIdRequestDto({ id: parseInt(req.params.id) });
 
@@ -56,6 +58,8 @@ export class EnquiryController implements IEnquiryController {
     async getAllEnquiries(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
+            const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
+
             // Step 1: Create get all enquiries request DTO
             const enquiryReq = new GetAllEnquiriesRequestDto({
                 limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,

@@ -5,7 +5,8 @@ import { CreateUserRequestDto, CreateUserResponseDto, GetUserByIdRequestDto, Get
 import { ApiError } from '../utils/err';
 import { genRandomString } from '../utils/common';
 import { ApiStatusCode } from '../utils/enum';
-import { hashPassword, verifyPassword } from 'src/utils/security';
+import { hashPassword, verifyPassword, generateUserSessionToken } from 'src/utils/security';
+import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
 
 export interface IUserService {
     createUser(req: CreateUserRequestDto, actionUserId: number): Promise<CreateUserResponseDto>;
@@ -20,7 +21,8 @@ export interface IUserService {
 export class UserService implements IUserService {
     constructor(
         private userRepo: UserRepository,
-        private authServ: AuthService
+        private authServ: AuthService,
+        private userLoginLogRepo: UserLoginLogRepository
     ) { }
 
     async createUser(req: CreateUserRequestDto, actionUserId: number): Promise<CreateUserResponseDto> {
@@ -135,13 +137,31 @@ export class UserService implements IUserService {
             throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
+        // Step 2: Check if user has too many login attempts
+        const topUserLoginLog = await this.userLoginLogRepo.findTopUserLoginLogByUserId(dbUser.id);
+        if (topUserLoginLog) {
+            if (topUserLoginLog.failAttempts === 5 && topUserLoginLog.createdAt.getTime() < Date.now() - 1000 * 60 * 60 * 12) {
+                throw new ApiError("Too many login attempts. Account has been locked for 12 hours", ApiStatusCode.INVALID_ARGUMENT, 400);
+            }
+        }
+
+        // Step 3: Verify password
         const correct = await verifyPassword(validatedReq.password, dbUser.passwordSalt, dbUser.hashedPassword)
         if (!correct) {
+            await this.userLoginLogRepo.createUserLoginLog({
+                userId: dbUser.id,
+                failAttempts: topUserLoginLog ? topUserLoginLog.failAttempts + 1 : 1,
+                createdBy: 0,
+            });
             throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
-        // Step 2: Generate user session token
-        const token = await this.authServ.generateUserSessionToken(dbUser.id);
+        // Step 4: Generate user session token
+        const token = await generateUserSessionToken(dbUser.id);
+        const dbUserLoginLog = await this.userLoginLogRepo.createUserLoginLog({
+            userId: dbUser.id,
+            sessionToken: token
+        });
 
         return new LoginResponseDto({
             token: token,

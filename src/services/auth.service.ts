@@ -5,10 +5,6 @@ import { ApiError } from '../utils/err';
 import { UserLoginLogRepository } from '../repositories/user_login_log.repository';
 import { UserRepository } from '../repositories/user.repository';
 
-import { UserLoginLog } from '@prisma/client';
-
-import bcrypt from 'bcrypt';
-
 const secretKey = process.env.JWT_SECRET_KEY || "";
 
 type Payload = {
@@ -18,7 +14,6 @@ type Payload = {
 
 export interface IAuthService {
     authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<number>;
-    generateUserSessionToken(userId: number): Promise<string>;
 }
 
 export class AuthService implements IAuthService {
@@ -67,38 +62,5 @@ export class AuthService implements IAuthService {
         }
 
         return user.id;
-    }
-
-    async generateUserSessionToken(userId: number): Promise<string> {
-        // Step 1: Sign JWT
-        const payload: Payload = {
-            userId: userId,
-            exp: Math.floor(Date.now() / 1000) + (60 * 60 * 3) // Token expires in 3 hours
-        };
-
-        const token = jwt.sign(payload, secretKey);
-
-        // Stpe 2: Save token to db
-        const userLoginLog: Partial<UserLoginLog> = {
-            userId: userId,
-            sessionToken: token
-        }
-        const dbUserLoginLog = await this.ustRepo.createUserLoginLog(userLoginLog);
-
-        return token;
-    };
-
-    async hashPassword(plainPassword: string, salt: string): Promise<string> {
-        const passwordWithSalt = plainPassword + salt;
-        const hashedPassword = await bcrypt.hash(passwordWithSalt, 10);
-
-        return hashedPassword;
-    }
-
-    async verifyPassword(plainPassword: string, salt: string, hashedPassword: string): Promise<boolean> {
-        const data = plainPassword + salt;
-        const correct = await bcrypt.compare(data, hashedPassword)
-
-        return correct
     }
 }

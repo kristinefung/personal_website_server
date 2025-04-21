@@ -57,7 +57,7 @@ export class IoCContainer {
 
         // Services
         this.authServ = new AuthService(this.ullRepo, this.userRepo);
-        this.userServ = new UserService(this.userRepo, this.authServ);
+        this.userServ = new UserService(this.userRepo, this.authServ, this.ullRepo);
         this.enquiryServ = new EnquiryService(this.enquiryRepo);
         this.educationServ = new EducationService(this.educationRepo);
         this.workServ = new WorkService(this.workRepo);

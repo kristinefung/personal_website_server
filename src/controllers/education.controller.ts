@@ -39,7 +39,6 @@ export class EducationController implements IEducationController {
     async getEducationById(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
             // Step 1: Call service to handle business logic
             const educationId = parseInt(req.params.id);
@@ -56,7 +55,6 @@ export class EducationController implements IEducationController {
     async getAllEducations(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-            await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
 
             const educationsReq = new GetAllEducationsRequestDto(req.body);
             const educations = await this.educationServ.getAllEducations(educationsReq);
