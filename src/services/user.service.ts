@@ -138,30 +138,22 @@ export class UserService implements IUserService {
         }
 
         // Step 2: Check if user has too many login attempts
-        const topUserLoginLog = await this.userLoginLogRepo.findTopUserLoginLogByUserId(dbUser.id);
-        if (topUserLoginLog) {
-            if (topUserLoginLog.failAttempts === 5 && topUserLoginLog.createdAt.getTime() < Date.now() - 1000 * 60 * 60 * 12) {
-                await this.userLoginLogRepo.createUserLoginLog({
-                    userId: dbUser.id,
-                    ipAddress: validatedReq.ipAddress,
-                    userAgent: validatedReq.userAgent,
-                    failAttempts: topUserLoginLog.failAttempts,
-                    createdBy: 0,
-                });
-                throw new ApiError("Too many login attempts. Account has been locked for 12 hours", ApiStatusCode.INVALID_ARGUMENT, 400);
-            }
+        if (dbUser.lockedExpiredAt && dbUser.lockedExpiredAt.getTime() > Date.now()) {
+            throw new ApiError("Too many login attempts. Account has been locked for 12 hours", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
         // Step 3: Verify password
         const correct = await verifyPassword(validatedReq.password, dbUser.passwordSalt, dbUser.hashedPassword)
         if (!correct) {
-            await this.userLoginLogRepo.createUserLoginLog({
+            const topUserLoginLog = await this.userLoginLogRepo.findTopUserLoginLogByUserId(dbUser.id);
+            const createdLog = await this.userLoginLogRepo.createUserLoginLog({
                 userId: dbUser.id,
                 ipAddress: validatedReq.ipAddress,
                 userAgent: validatedReq.userAgent,
                 failAttempts: topUserLoginLog ? topUserLoginLog.failAttempts + 1 : 1,
-                createdBy: 0,
+                createdBy: 1,
             });
+
             throw new ApiError("Email or password incorrect", ApiStatusCode.INVALID_ARGUMENT, 400);
         }
 
@@ -172,7 +164,8 @@ export class UserService implements IUserService {
             ipAddress: validatedReq.ipAddress,
             userAgent: validatedReq.userAgent,
             failAttempts: 0,
-            sessionToken: token
+            sessionToken: token,
+            createdBy: dbUser.id,
         });
 
         return new LoginResponseDto({

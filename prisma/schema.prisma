@@ -39,6 +39,8 @@ model User {
   roleId         UserRole
   statusId       UserStatus
 
+  lockedExpiredAt DateTime?
+
   // This record's audit trail
   createdAt DateTime  @default(now())
   createdBy Int       @default(0)

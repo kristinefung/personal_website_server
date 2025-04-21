@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { UserService } from 'src/services/user.service';
 import { AuthService } from 'src/services/auth.service';
 import { jsonResponse } from 'src/utils/jsonResponse';
-import { UserRole } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { CreateUserRequestDto, GetUserByIdRequestDto, GetAllUsersRequestDto, DeleteUserRequestDto, UpdateUserByIdRequestDto, LoginRequestDto } from 'src/dtos/user.dto';
 
 
@@ -29,10 +29,10 @@ export class UserController implements IUserController {
 
             // Step 1: Call service to handle business logic
             const userReq = new CreateUserRequestDto(req.body);
-            const createdUser = await this.userServ.createUser(userReq, actionUserId);
+            const data = await this.userServ.createUser(userReq, 1);
 
             // Step 2: return success response
-            return jsonResponse(req, res, traceId, { user: createdUser }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -46,10 +46,10 @@ export class UserController implements IUserController {
             // Step 1: Call service to handle business logic
             const userId = parseInt(req.params.id);
             const userReq = new GetUserByIdRequestDto({ id: userId });
-            const user = await this.userServ.getUserById(userReq);
+            const data = await this.userServ.getUserById(userReq);
 
             // Step 2: return success response
-            return jsonResponse(req, res, traceId, { user: user }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -59,10 +59,17 @@ export class UserController implements IUserController {
         const traceId = uuidv4();
         try {
             const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
-
-            const usersReq = new GetAllUsersRequestDto(req.body);
-            const users = await this.userServ.getAllUsers(usersReq);
-            return jsonResponse(req, res, traceId, { users: users }, null);
+            console.log(req.query);
+            const usersReq = new GetAllUsersRequestDto({
+                limit: req.query.limit ? parseInt(req.params.limit) : undefined,
+                offset: req.query.offset ? parseInt(req.params.offset) : undefined,
+                orderBy: {
+                    field: req.query.orderBy as keyof User || undefined,
+                    direction: req.query.orderDirection as 'asc' | 'desc' || undefined
+                }
+            });
+            const data = await this.userServ.getAllUsers(usersReq);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -89,8 +96,8 @@ export class UserController implements IUserController {
 
             const userId = parseInt(req.params.id);
             const updateUserReq = new UpdateUserByIdRequestDto({ id: userId, user: req.body });
-            const user = await this.userServ.updateUserById(updateUserReq, actionUserId);
-            return jsonResponse(req, res, traceId, { user: user }, null);
+            const data = await this.userServ.updateUserById(updateUserReq, actionUserId);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -104,8 +111,8 @@ export class UserController implements IUserController {
                 ipAddress: req.ip,
                 userAgent: req.get('user-agent')
             });
-            const token = await this.userServ.login(loginReq);
-            return jsonResponse(req, res, traceId, { userSessionToken: token }, null);
+            const data = await this.userServ.login(loginReq);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }

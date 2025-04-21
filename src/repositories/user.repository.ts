@@ -110,6 +110,7 @@ export class UserRepository implements IUserRepository {
                 passwordSalt: user.passwordSalt,
                 roleId: user.roleId,
                 statusId: user.statusId,
+                lockedExpiredAt: user.lockedExpiredAt,
                 createdAt: user.createdAt,
                 createdBy: user.createdBy,
                 updatedAt: new Date(),

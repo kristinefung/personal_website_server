@@ -5,7 +5,7 @@ import { ApiError } from 'src/utils/err';
 import { ApiStatusCode } from 'src/utils/enum';
 
 export interface IEnquiryService {
-    createEnquiry(req: CreateEnquiryRequestDto, actionUserId: number): Promise<CreateEnquiryResponseDto>;
+    createEnquiry(req: CreateEnquiryRequestDto): Promise<CreateEnquiryResponseDto>;
     getEnquiryById(req: GetEnquiryByIdRequestDto): Promise<GetEnquiryByIdResponseDto>;
     getAllEnquiries(req: GetAllEnquiriesRequestDto): Promise<GetAllEnquiriesResponseDto>;
     deleteEnquiryById(req: DeleteEnquiryRequestDto, actionUserId: number): Promise<DeleteEnquiryResponseDto>;
@@ -17,7 +17,7 @@ export class EnquiryService implements IEnquiryService {
         private enquiryRepo: EnquiryRepository,
     ) { }
 
-    async createEnquiry(req: CreateEnquiryRequestDto, actionUserId: number): Promise<CreateEnquiryResponseDto> {
+    async createEnquiry(req: CreateEnquiryRequestDto): Promise<CreateEnquiryResponseDto> {
         // Step 1: Validate input
         const validatedReq = req.validate();
 
@@ -25,7 +25,7 @@ export class EnquiryService implements IEnquiryService {
         const createdEnquiryId = await this.enquiryRepo.createEnquiry({
             ...validatedReq,
             statusId: EnquiryStatus.UNHANDLED,
-            createdBy: actionUserId,
+            createdBy: 1,
             createdAt: new Date(),
         });
 

@@ -28,7 +28,7 @@ export class EnquiryController implements IEnquiryController {
             const enquiryReq = new CreateEnquiryRequestDto(req.body);
 
             // Step 2: Call service to handle business logic
-            const createdEnquiry = await this.enquiryServ.createEnquiry(enquiryReq, 9999); // TODO: Get actual user ID
+            const createdEnquiry = await this.enquiryServ.createEnquiry(enquiryReq); // TODO: Get actual user ID
 
             // Step 3: Return success response
             return jsonResponse(req, res, traceId, { id: createdEnquiry.id }, null);

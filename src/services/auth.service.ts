@@ -24,7 +24,6 @@ export class AuthService implements IAuthService {
 
     async authUser(requiredRoleIds: UserRole[], authHeader: string | undefined): Promise<number> {
         const err = new ApiError("User has no permission", ApiStatusCode.UNAUTHORIZED, 401);
-
         // Step 1: Check is valid bear token
         if (typeof authHeader !== 'string') {
             console.error(`No token provided.`);

@@ -95,8 +95,8 @@ const GetAllUsersRequestSchema = z.object({
     limit: z.number().optional(),
     offset: z.number().optional(),
     orderBy: z.object({
-        field: z.enum(['id', 'createdAt', 'updatedAt'] as const, { required_error: "orderBy is required" }),
-        direction: z.enum(['asc', 'desc'])
+        field: z.enum(['id', 'createdAt', 'updatedAt'] as const, { required_error: "orderBy is required" }).optional(),
+        direction: z.enum(['asc', 'desc']).optional()
     }).optional(),
 });
 
