@@ -22,7 +22,7 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
                 sessionToken: log.sessionToken,
                 loginAt: log.loginAt ?? new Date(),
                 logoutAt: log.logoutAt,
-
+                failAttempts: log.failAttempts ?? 0,
                 createdAt: new Date(),
                 createdBy: log.createdBy ?? 0,
             },
@@ -44,7 +44,7 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
                 sessionToken: log.sessionToken,
                 loginAt: log.loginAt,
                 logoutAt: log.logoutAt,
-
+                failAttempts: log.failAttempts,
                 createdAt: log.createdAt,
                 createdBy: log.createdBy,
                 updatedAt: log.updatedAt,
