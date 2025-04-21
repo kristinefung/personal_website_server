@@ -1,16 +1,15 @@
 import { EnquiryRepository } from '../repositories/enquiry.repository';
-import { Enquiry } from '../entities/enquiry.entity';
-
+import { Enquiry, EnquiryStatus } from '@prisma/client';
+import { CreateEnquiryRequestDto, CreateEnquiryResponseDto, GetEnquiryByIdRequestDto, GetEnquiryByIdResponseDto, GetAllEnquiriesRequestDto, GetAllEnquiriesResponseDto, DeleteEnquiryRequestDto, DeleteEnquiryResponseDto, UpdateEnquiryByIdRequestDto, UpdateEnquiryByIdResponseDto } from '../dtos/enquiry.dto';
 import { ApiError } from '../utils/err';
 import { ApiStatusCode } from '../utils/enum';
 
 export interface IEnquiryService {
-    createEnquiry(enquiryReq: Enquiry): Promise<Enquiry>;
-    getEnquiryById(enquiryId: number): Promise<Enquiry>;
-    getAllEnquiries(): Promise<Enquiry[]>;
-    deleteEnquiryById(enquiryId: number): Promise<void>;
-    updateEnquiryById(enquiryId: number, enquiryReq: Enquiry): Promise<Enquiry>;
-    searchEnquiries(enquiryReq: Enquiry): Promise<Enquiry[]>;
+    createEnquiry(req: CreateEnquiryRequestDto, actionUserId: number): Promise<CreateEnquiryResponseDto>;
+    getEnquiryById(req: GetEnquiryByIdRequestDto): Promise<GetEnquiryByIdResponseDto>;
+    getAllEnquiries(req: GetAllEnquiriesRequestDto): Promise<GetAllEnquiriesResponseDto>;
+    deleteEnquiryById(req: DeleteEnquiryRequestDto, actionUserId: number): Promise<DeleteEnquiryResponseDto>;
+    updateEnquiryById(req: UpdateEnquiryByIdRequestDto, actionUserId: number): Promise<UpdateEnquiryByIdResponseDto>;
 }
 
 export class EnquiryService implements IEnquiryService {
@@ -18,48 +17,108 @@ export class EnquiryService implements IEnquiryService {
         private enquiryRepo: EnquiryRepository,
     ) { }
 
-    async createEnquiry(enquiryReq: Enquiry): Promise<Enquiry> {
+    async createEnquiry(req: CreateEnquiryRequestDto, actionUserId: number): Promise<CreateEnquiryResponseDto> {
         // Step 1: Validate input
-        let enquiry = enquiryReq.createEnquiry();
+        const validatedReq = req.validate();
 
         // Step 2: Insert enquiry into database
-        const enquiryRes = await this.enquiryRepo.createEnquiry(enquiry);
+        const createdEnquiryId = await this.enquiryRepo.createEnquiry({
+            ...validatedReq,
+            statusId: EnquiryStatus.UNHANDLED,
+            createdBy: actionUserId,
+            createdAt: new Date(),
+        });
 
-        // TODO: Step 3: Send notification email to admin
-
-        return enquiryRes;
-    }
-
-    async getEnquiryById(enquiryId: number): Promise<Enquiry> {
-        const enquiry = await this.enquiryRepo.getEnquiryById(enquiryId);
-        if (!enquiry) {
-            throw new ApiError("Enquiry not existed", ApiStatusCode.INVALID_ARGUMENT, 400);
+        // Step 3: Get created enquiry
+        const createdEnquiry = await this.enquiryRepo.getEnquiryById(createdEnquiryId);
+        if (!createdEnquiry) {
+            throw new ApiError("Failed to create enquiry", ApiStatusCode.INVALID_ARGUMENT, 500);
         }
-        return enquiry;
+
+        // TODO: Step 4: Send notification email to admin
+
+        return new CreateEnquiryResponseDto({ id: createdEnquiry.id });
     }
 
-    async getAllEnquiries(): Promise<Enquiry[]> {
-        const enquiries = await this.enquiryRepo.getAllEnquiries();
-        return enquiries;
+    async getEnquiryById(req: GetEnquiryByIdRequestDto): Promise<GetEnquiryByIdResponseDto> {
+        // Step 1: Validate input
+        const validatedReq = req.validate();
+
+        // Step 2: Get enquiry from database
+        const enquiry = await this.enquiryRepo.getEnquiryById(validatedReq.id);
+        if (!enquiry) {
+            throw new ApiError("Enquiry not found", ApiStatusCode.INVALID_ARGUMENT, 404);
+        }
+
+        return new GetEnquiryByIdResponseDto({
+            enquiry: {
+                id: enquiry.id,
+                name: enquiry.name,
+                email: enquiry.email,
+                companyName: enquiry.companyName,
+                phoneNo: enquiry.phoneNo,
+                comment: enquiry.comment,
+                statusId: enquiry.statusId,
+            }
+        });
     }
 
-    async deleteEnquiryById(enquiryId: number): Promise<void> {
-        await this.enquiryRepo.deleteEnquiryById(enquiryId);
-        return;
+    async getAllEnquiries(req: GetAllEnquiriesRequestDto): Promise<GetAllEnquiriesResponseDto> {
+        // Step 1: Validate input
+        const validatedReq = req.validate();
+
+        // Step 2: Get enquiries from database
+        const { enquiries, total } = await this.enquiryRepo.getAllEnquiries({
+            limit: validatedReq.limit,
+            offset: validatedReq.offset,
+            orderBy: validatedReq.orderBy?.field,
+            orderDirection: validatedReq.orderBy?.direction,
+        });
+
+        return new GetAllEnquiriesResponseDto({
+            enquiries: enquiries.map(enquiry => ({
+                id: enquiry.id,
+                name: enquiry.name,
+                email: enquiry.email,
+                companyName: enquiry.companyName,
+                phoneNo: enquiry.phoneNo,
+                comment: enquiry.comment,
+                statusId: enquiry.statusId,
+            })),
+            total: total
+        });
     }
 
-    async updateEnquiryById(enquiryId: number, enquiryReq: Enquiry): Promise<Enquiry> {
-        // Step 0: Data validation
-        let enquiry = enquiryReq.updateEnquiry();
+    async deleteEnquiryById(req: DeleteEnquiryRequestDto, actionUserId: number): Promise<DeleteEnquiryResponseDto> {
+        // Step 1: Validate input
+        const validatedReq = req.validate();
 
-        // Step 1: Update enquiry into database
-        const enquiryRes = await this.enquiryRepo.updateEnquiryById(enquiryId, enquiry);
+        // Step 2: Delete enquiry from database
+        await this.enquiryRepo.deleteEnquiryById(validatedReq.id);
 
-        return enquiryRes;
+        return new DeleteEnquiryResponseDto({
+            id: validatedReq.id
+        });
     }
 
-    async searchEnquiries(enquiryReq: Enquiry): Promise<Enquiry[]> {
-        const enquiries = await this.enquiryRepo.searchEnquiries(enquiryReq);
-        return enquiries;
+    async updateEnquiryById(req: UpdateEnquiryByIdRequestDto, actionUserId: number): Promise<UpdateEnquiryByIdResponseDto> {
+        // Step 1: Validate input
+        const validatedReq = req.validate();
+
+        // Step 2: Check if enquiry exists
+        const existingEnquiry = await this.enquiryRepo.getEnquiryById(validatedReq.id);
+        if (!existingEnquiry) {
+            throw new ApiError("Enquiry not found", ApiStatusCode.INVALID_ARGUMENT, 404);
+        }
+
+        // Step 3: Update enquiry in database
+        const updatedEnquiry = await this.enquiryRepo.updateEnquiryById(validatedReq.id, {
+            ...existingEnquiry,
+            ...validatedReq.enquiry,
+            updatedAt: new Date(),
+            updatedBy: actionUserId,
+        } as Enquiry);
+
+        return new UpdateEnquiryByIdResponseDto({});
     }
 }
