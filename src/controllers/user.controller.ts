@@ -99,7 +99,11 @@ export class UserController implements IUserController {
     async login(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-            const loginReq = new LoginRequestDto(req.body);
+            const loginReq = new LoginRequestDto({
+                ...req.body,
+                ipAddress: req.ip,
+                userAgent: req.get('user-agent')
+            });
             const token = await this.userServ.login(loginReq);
             return jsonResponse(req, res, traceId, { userSessionToken: token }, null);
         } catch (err) {

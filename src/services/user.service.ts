@@ -141,6 +141,13 @@ export class UserService implements IUserService {
         const topUserLoginLog = await this.userLoginLogRepo.findTopUserLoginLogByUserId(dbUser.id);
         if (topUserLoginLog) {
             if (topUserLoginLog.failAttempts === 5 && topUserLoginLog.createdAt.getTime() < Date.now() - 1000 * 60 * 60 * 12) {
+                await this.userLoginLogRepo.createUserLoginLog({
+                    userId: dbUser.id,
+                    ipAddress: validatedReq.ipAddress,
+                    userAgent: validatedReq.userAgent,
+                    failAttempts: topUserLoginLog.failAttempts,
+                    createdBy: 0,
+                });
                 throw new ApiError("Too many login attempts. Account has been locked for 12 hours", ApiStatusCode.INVALID_ARGUMENT, 400);
             }
         }
@@ -150,6 +157,8 @@ export class UserService implements IUserService {
         if (!correct) {
             await this.userLoginLogRepo.createUserLoginLog({
                 userId: dbUser.id,
+                ipAddress: validatedReq.ipAddress,
+                userAgent: validatedReq.userAgent,
                 failAttempts: topUserLoginLog ? topUserLoginLog.failAttempts + 1 : 1,
                 createdBy: 0,
             });
@@ -160,6 +169,9 @@ export class UserService implements IUserService {
         const token = await generateUserSessionToken(dbUser.id);
         const dbUserLoginLog = await this.userLoginLogRepo.createUserLoginLog({
             userId: dbUser.id,
+            ipAddress: validatedReq.ipAddress,
+            userAgent: validatedReq.userAgent,
+            failAttempts: 0,
             sessionToken: token
         });
 

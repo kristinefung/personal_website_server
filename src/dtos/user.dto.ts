@@ -210,6 +210,8 @@ const LoginRequestSchema = z.object({
     password: z.string({ required_error: "password is required" })
         .min(8, "password must be at least 8 characters")
         .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, "password must contain at least one uppercase letter, one lowercase letter, and one number"),
+    ipAddress: z.string().optional(),
+    userAgent: z.string().optional(),
 });
 
 type LoginRequestType = z.infer<typeof LoginRequestSchema>;
@@ -217,6 +219,8 @@ type LoginRequestType = z.infer<typeof LoginRequestSchema>;
 export class LoginRequestDto {
     email?: string;
     password?: string;
+    ipAddress?: string;
+    userAgent?: string;
 
     constructor(data: Partial<LoginRequestDto> = {}) {
         Object.assign(this, data);
