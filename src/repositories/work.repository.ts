@@ -33,7 +33,7 @@ export class WorkRepository implements IWorkRepository {
                 isCurrent: work.isCurrent!,
                 createdAt: new Date(),
                 createdBy: work.createdBy!,
-                deleted: 0,
+                deleted: false,
             },
         });
 
@@ -42,7 +42,7 @@ export class WorkRepository implements IWorkRepository {
 
     async getAllWorks(params?: WorkQueryParams): Promise<{ works: Work[], total: number }> {
         const where = {
-            deleted: 0
+            deleted: false
         };
 
         const works = await this.prismaClient.work.findMany({
@@ -68,7 +68,7 @@ export class WorkRepository implements IWorkRepository {
         const work = await this.prismaClient.work.findUnique({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
         });
         return work;
@@ -78,10 +78,10 @@ export class WorkRepository implements IWorkRepository {
         await this.prismaClient.work.update({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
             data: {
-                deleted: 1
+                deleted: true
             },
         });
         return;
@@ -91,7 +91,7 @@ export class WorkRepository implements IWorkRepository {
         const updatedWork = await this.prismaClient.work.update({
             where: {
                 id: id,
-                deleted: 0,
+                deleted: false,
             },
             data: {
                 title: work.title,

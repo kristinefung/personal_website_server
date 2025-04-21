@@ -11,7 +11,7 @@ type EducationResponse = {
     startYear: number;
     endMonth?: number;
     endYear?: number;
-    isCurrent: number;
+    isCurrent: boolean;
 }
 
 // Create Education
@@ -24,7 +24,7 @@ const CreateEducationRequestSchema = z.object({
     startYear: z.number().min(1900).max(new Date().getFullYear()),
     endMonth: z.number().min(1).max(12).optional(),
     endYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
-    isCurrent: z.number().min(0).max(1),
+    isCurrent: z.boolean(),
 });
 
 type CreateEducationRequestType = z.infer<typeof CreateEducationRequestSchema>;
@@ -38,7 +38,7 @@ export class CreateEducationRequestDto {
     startYear?: number;
     endMonth?: number;
     endYear?: number;
-    isCurrent?: number;
+    isCurrent?: boolean;
 
     constructor(data: Partial<CreateEducationRequestDto> = {}) {
         Object.assign(this, data);
@@ -177,7 +177,7 @@ const UpdateEducationByIdRequestSchema = z.object({
         startYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
         endMonth: z.number().min(1).max(12).optional(),
         endYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
-        isCurrent: z.number().min(0).max(1).optional(),
+        isCurrent: z.boolean().optional(),
     })
 });
 
@@ -194,7 +194,7 @@ export class UpdateEducationByIdRequestDto {
         startYear?: number;
         endMonth?: number;
         endYear?: number;
-        isCurrent?: number;
+        isCurrent?: boolean;
     };
 
     constructor(data: Partial<UpdateEducationByIdRequestDto> = {}) {

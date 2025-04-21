@@ -35,7 +35,7 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
         const updatedUserLoginLog = await this.prismaClient.userLoginLog.update({
             where: {
                 sessionToken: sessionToken,
-                deleted: 0
+                deleted: false
             },
             data: {
                 userId: log.userId,
@@ -60,7 +60,7 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
         const userLoginLog = await this.prismaClient.userLoginLog.findUnique({
             where: {
                 sessionToken: sessionToken,
-                deleted: 0
+                deleted: false
             },
         });
 
@@ -71,7 +71,7 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
         const userLoginLog = await this.prismaClient.userLoginLog.findFirst({
             where: {
                 userId: userId,
-                deleted: 0
+                deleted: false
             },
             orderBy: {
                 createdAt: 'desc',
@@ -85,10 +85,10 @@ export class UserLoginLogRepository implements IUserLoginLogRepository {
         const dbData = await this.prismaClient.userLoginLog.update({
             where: {
                 sessionToken: sessionToken,
-                deleted: 0
+                deleted: false
             },
             data: {
-                deleted: 1
+                deleted: true
             },
         });
         return;

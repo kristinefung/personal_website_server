@@ -34,7 +34,7 @@ export class EducationRepository implements IEducationRepository {
                 isCurrent: education.isCurrent!,
                 createdAt: new Date(),
                 createdBy: education.createdBy!,
-                deleted: 0,
+                deleted: false,
             },
         });
 
@@ -43,7 +43,7 @@ export class EducationRepository implements IEducationRepository {
 
     async getAllEducations(params?: EducationQueryParams): Promise<{ educations: Education[], total: number }> {
         const where = {
-            deleted: 0
+            deleted: false
         };
 
         const educations = await this.prismaClient.education.findMany({
@@ -69,7 +69,7 @@ export class EducationRepository implements IEducationRepository {
         const education = await this.prismaClient.education.findUnique({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
         });
         return education;
@@ -79,10 +79,10 @@ export class EducationRepository implements IEducationRepository {
         await this.prismaClient.education.update({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
             data: {
-                deleted: 1
+                deleted: true
             },
         });
         return;
@@ -92,7 +92,7 @@ export class EducationRepository implements IEducationRepository {
         const updatedEducation = await this.prismaClient.education.update({
             where: {
                 id: id,
-                deleted: 0,
+                deleted: false,
             },
             data: {
                 degree: education.degree,

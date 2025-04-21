@@ -42,7 +42,7 @@ export class EnquiryRepository implements IEnquiryRepository {
         const enquiry = await this.prismaClient.enquiry.findUnique({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
         });
         return enquiry;
@@ -50,7 +50,7 @@ export class EnquiryRepository implements IEnquiryRepository {
 
     async getAllEnquiries(params?: EnquiryQueryParams): Promise<{ enquiries: Enquiry[], total: number }> {
         const where = {
-            deleted: 0
+            deleted: false
         };
 
         const enquiries = await this.prismaClient.enquiry.findMany({
@@ -101,10 +101,10 @@ export class EnquiryRepository implements IEnquiryRepository {
         const enquiry = await this.prismaClient.enquiry.update({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
             data: {
-                deleted: 1
+                deleted: true
             },
         });
         return;
@@ -114,7 +114,7 @@ export class EnquiryRepository implements IEnquiryRepository {
         const updatedEnquiry = await this.prismaClient.enquiry.update({
             where: {
                 id: id,
-                deleted: 0,
+                deleted: false,
             },
             data: {
                 name: enquiry.name,

@@ -32,7 +32,7 @@ export class UserRepository implements IUserRepository {
                 statusId: user.statusId!,
                 createdAt: new Date(),
                 createdBy: user.createdBy!,
-                deleted: user.deleted!,
+                deleted: false,
             },
         });
 
@@ -41,7 +41,7 @@ export class UserRepository implements IUserRepository {
 
     async getAllUsers(params?: UserQueryParams): Promise<{ users: User[], total: number }> {
         const where = {
-            deleted: 0
+            deleted: false
         };
 
         const users = await this.prismaClient.user.findMany({
@@ -67,7 +67,7 @@ export class UserRepository implements IUserRepository {
         const user = await this.prismaClient.user.findUnique({
             where: {
                 email,
-                deleted: 0
+                deleted: false
             },
         });
 
@@ -78,20 +78,20 @@ export class UserRepository implements IUserRepository {
         const user = await this.prismaClient.user.findUnique({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
         });
         return user;
     }
 
     async deleteUserById(id: number): Promise<void> {
-        const user = await this.prismaClient.user.update({
+        await this.prismaClient.user.update({
             where: {
                 id: id,
-                deleted: 0
+                deleted: false
             },
             data: {
-                deleted: 1
+                deleted: true
             },
         });
         return;
@@ -101,7 +101,7 @@ export class UserRepository implements IUserRepository {
         const updatedUser = await this.prismaClient.user.update({
             where: {
                 id: id,
-                deleted: 0,
+                deleted: false,
             },
             data: {
                 email: user.email,

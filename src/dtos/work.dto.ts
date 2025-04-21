@@ -10,7 +10,7 @@ type WorkResponse = {
     startYear: number;
     endMonth?: number;
     endYear?: number;
-    isCurrent: number;
+    isCurrent: boolean;
 }
 
 // Create Work
@@ -22,7 +22,7 @@ const CreateWorkRequestSchema = z.object({
     startYear: z.number().min(1900).max(new Date().getFullYear()),
     endMonth: z.number().min(1).max(12).optional(),
     endYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
-    isCurrent: z.number().min(0).max(1),
+    isCurrent: z.boolean(),
 });
 
 type CreateWorkRequestType = z.infer<typeof CreateWorkRequestSchema>;
@@ -35,7 +35,7 @@ export class CreateWorkRequestDto {
     startYear?: number;
     endMonth?: number;
     endYear?: number;
-    isCurrent?: number;
+    isCurrent?: boolean;
 
     constructor(data: Partial<CreateWorkRequestDto> = {}) {
         Object.assign(this, data);
@@ -173,7 +173,7 @@ const UpdateWorkByIdRequestSchema = z.object({
         startYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
         endMonth: z.number().min(1).max(12).optional(),
         endYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
-        isCurrent: z.number().min(0).max(1).optional(),
+        isCurrent: z.boolean().optional(),
     })
 });
 
@@ -189,7 +189,7 @@ export class UpdateWorkByIdRequestDto {
         startYear?: number;
         endMonth?: number;
         endYear?: number;
-        isCurrent?: number;
+        isCurrent?: boolean;
     };
 
     constructor(data: Partial<UpdateWorkByIdRequestDto> = {}) {
