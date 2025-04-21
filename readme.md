@@ -85,9 +85,8 @@ src/
 ## 🔒 Environment Variables
 
 - `PORT`: Server port (default: 3000)
-- `DATABASE_URL`: PostgreSQL connection string
+- `DATABASE_URL`: MySQL connection string
 - `JWT_SECRET`: JWT secret key
-- `NODE_ENV`: Environment (development/production)
 
 ## 🐳 Docker Support
 
