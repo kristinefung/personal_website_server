@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Request, Response } from 'express';
 import { EnquiryService } from '../services/enquiry.service';
 import { AuthService } from '../services/auth.service';
@@ -20,7 +21,9 @@ export class EnquiryController implements IEnquiryController {
     ) { }
 
     async createEnquiry(req: Request, res: Response) {
+        const traceId = uuidv4();
         try {
+
             // Step 1: Create enquiry request DTO
             const enquiryReq = new CreateEnquiryRequestDto(req.body);
 
@@ -28,13 +31,14 @@ export class EnquiryController implements IEnquiryController {
             const createdEnquiry = await this.enquiryServ.createEnquiry(enquiryReq, 9999); // TODO: Get actual user ID
 
             // Step 3: Return success response
-            return jsonResponse(res, { id: createdEnquiry.id }, null);
+            return jsonResponse(req, res, traceId, { id: createdEnquiry.id }, null);
         } catch (err) {
-            return jsonResponse(res, {}, err);
+            return jsonResponse(req, res, traceId, {}, err);
         }
     }
 
     async getEnquiryById(req: Request, res: Response) {
+        const traceId = uuidv4();
         try {
             // Step 1: Create get enquiry request DTO
             const enquiryReq = new GetEnquiryByIdRequestDto({ id: parseInt(req.params.id) });
@@ -43,13 +47,14 @@ export class EnquiryController implements IEnquiryController {
             const enquiry = await this.enquiryServ.getEnquiryById(enquiryReq);
 
             // Step 3: Return success response
-            return jsonResponse(res, { enquiry: enquiry.enquiry }, null);
+            return jsonResponse(req, res, traceId, { enquiry: enquiry.enquiry }, null);
         } catch (err) {
-            return jsonResponse(res, {}, err);
+            return jsonResponse(req, res, traceId, {}, err);
         }
     }
 
     async getAllEnquiries(req: Request, res: Response) {
+        const traceId = uuidv4();
         try {
             // Step 1: Create get all enquiries request DTO
             const enquiryReq = new GetAllEnquiriesRequestDto({
@@ -65,13 +70,14 @@ export class EnquiryController implements IEnquiryController {
             const enquiries = await this.enquiryServ.getAllEnquiries(enquiryReq);
 
             // Step 3: Return success response
-            return jsonResponse(res, { enquiries: enquiries.enquiries, total: enquiries.total }, null);
+            return jsonResponse(req, res, traceId, { enquiries: enquiries.enquiries, total: enquiries.total }, null);
         } catch (err) {
-            return jsonResponse(res, {}, err);
+            return jsonResponse(req, res, traceId, {}, err);
         }
     }
 
     async deleteEnquiryById(req: Request, res: Response) {
+        const traceId = uuidv4();
         try {
             // Step 1: Authenticate user
             const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
@@ -83,13 +89,14 @@ export class EnquiryController implements IEnquiryController {
             await this.enquiryServ.deleteEnquiryById(enquiryReq, actionUserId);
 
             // Step 4: Return success response
-            return jsonResponse(res, {}, null);
+            return jsonResponse(req, res, traceId, {}, null);
         } catch (err) {
-            return jsonResponse(res, {}, err);
+            return jsonResponse(req, res, traceId, {}, err);
         }
     }
 
     async updateEnquiryById(req: Request, res: Response) {
+        const traceId = uuidv4();
         try {
             // Step 1: Authenticate user
             const actionUserId = await this.authServ.authUser([UserRole.ADMIN], req.headers.authorization);
@@ -104,9 +111,9 @@ export class EnquiryController implements IEnquiryController {
             const updatedEnquiry = await this.enquiryServ.updateEnquiryById(enquiryReq, actionUserId);
 
             // Step 4: Return success response
-            return jsonResponse(res, {}, null);
+            return jsonResponse(req, res, traceId, {}, null);
         } catch (err) {
-            return jsonResponse(res, {}, err);
+            return jsonResponse(req, res, traceId, {}, err);
         }
     }
 }

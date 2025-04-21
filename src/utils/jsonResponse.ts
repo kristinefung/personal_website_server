@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiStatusCode } from './enum';
 import * as Err from './err';
 
@@ -16,7 +16,7 @@ function formattedResponse(statusCode: string, message: string, data: object): F
     };
 }
 
-export function jsonResponse(res: Response, data: object, err?: any) {
+export function jsonResponse(req: Request, res: Response, traceId: string, data: object, err?: any) {
     console.log(err);
     if (err instanceof Err.ApiError) {
         res.status(err.http_status).json(formattedResponse(err.status_code, err.message, data));
