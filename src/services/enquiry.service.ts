@@ -93,7 +93,13 @@ export class EnquiryService implements IEnquiryService {
         // Step 1: Validate input
         const validatedReq = req.validate();
 
-        // Step 2: Delete enquiry from database
+        // Step 2: Check if enquiry exists
+        const existingEnquiry = await this.enquiryRepo.getEnquiryById(validatedReq.id);
+        if (!existingEnquiry) {
+            throw new ApiError("Enquiry not found", ApiStatusCode.INVALID_ARGUMENT, 404);
+        }
+
+        // Step 3: Delete enquiry from database
         await this.enquiryRepo.deleteEnquiryById(validatedReq.id);
 
         return new DeleteEnquiryResponseDto({

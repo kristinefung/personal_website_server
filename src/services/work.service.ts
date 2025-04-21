@@ -96,7 +96,13 @@ export class WorkService implements IWorkService {
         // Step 0: Data validation
         let validatedReq = req.validate();
 
-        // Step 1: Delete work from database
+        // Step 1: Check if work exists
+        const existingWork = await this.workRepo.getWorkById(validatedReq.id);
+        if (!existingWork) {
+            throw new ApiError("Work not found", ApiStatusCode.INVALID_ARGUMENT, 404);
+        }
+
+        // Step 2: Delete work from database
         await this.workRepo.deleteWorkById(validatedReq.id);
 
         return new DeleteWorkResponseDto({

@@ -28,10 +28,10 @@ export class EnquiryController implements IEnquiryController {
             const enquiryReq = new CreateEnquiryRequestDto(req.body);
 
             // Step 2: Call service to handle business logic
-            const createdEnquiry = await this.enquiryServ.createEnquiry(enquiryReq); // TODO: Get actual user ID
+            const data = await this.enquiryServ.createEnquiry(enquiryReq); // TODO: Get actual user ID
 
             // Step 3: Return success response
-            return jsonResponse(req, res, traceId, { id: createdEnquiry.id }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -46,10 +46,10 @@ export class EnquiryController implements IEnquiryController {
             const enquiryReq = new GetEnquiryByIdRequestDto({ id: parseInt(req.params.id) });
 
             // Step 2: Call service to handle business logic
-            const enquiry = await this.enquiryServ.getEnquiryById(enquiryReq);
+            const data = await this.enquiryServ.getEnquiryById(enquiryReq);
 
             // Step 3: Return success response
-            return jsonResponse(req, res, traceId, { enquiry: enquiry.enquiry }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -71,10 +71,10 @@ export class EnquiryController implements IEnquiryController {
             });
 
             // Step 2: Call service to handle business logic
-            const enquiries = await this.enquiryServ.getAllEnquiries(enquiryReq);
+            const data = await this.enquiryServ.getAllEnquiries(enquiryReq);
 
             // Step 3: Return success response
-            return jsonResponse(req, res, traceId, { enquiries: enquiries.enquiries, total: enquiries.total }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }

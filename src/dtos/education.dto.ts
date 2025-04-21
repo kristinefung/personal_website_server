@@ -16,12 +16,12 @@ type EducationResponse = {
 
 // Create Education
 const CreateEducationRequestSchema = z.object({
-    degree: z.string(),
-    subject: z.string(),
-    schoolName: z.string(),
-    description: z.string(),
-    startMonth: z.number().min(1).max(12),
-    startYear: z.number().min(1900).max(new Date().getFullYear()),
+    degree: z.string({ required_error: "degree is required" }).min(1),
+    subject: z.string({ required_error: "subject is required" }).min(1),
+    schoolName: z.string({ required_error: "schoolName is required" }).min(1),
+    description: z.string({ required_error: "description is required" }).min(1),
+    startMonth: z.number({ required_error: "startMonth is required" }).min(1).max(12),
+    startYear: z.number({ required_error: "startYear is required" }).min(1900).max(new Date().getFullYear()),
     endMonth: z.number().min(1).max(12).optional(),
     endYear: z.number().min(1900).max(new Date().getFullYear()).optional(),
     isCurrent: z.boolean(),

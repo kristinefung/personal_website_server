@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { EducationService } from 'src/services/education.service';
 import { AuthService } from 'src/services/auth.service';
 import { jsonResponse } from 'src/utils/jsonResponse';
-import { UserRole } from '@prisma/client';
+import { Education, UserRole, Work } from '@prisma/client';
 import { CreateEducationRequestDto, GetEducationByIdRequestDto, GetAllEducationsRequestDto, DeleteEducationRequestDto, UpdateEducationByIdRequestDto } from 'src/dtos/education.dto';
 
 export interface IEducationController {
@@ -43,10 +43,10 @@ export class EducationController implements IEducationController {
             // Step 1: Call service to handle business logic
             const educationId = parseInt(req.params.id);
             const educationReq = new GetEducationByIdRequestDto({ id: educationId });
-            const education = await this.educationServ.getEducationById(educationReq);
+            const data = await this.educationServ.getEducationById(educationReq);
 
             // Step 2: return success response
-            return jsonResponse(req, res, traceId, { education: education }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -56,9 +56,16 @@ export class EducationController implements IEducationController {
         const traceId = uuidv4();
         try {
 
-            const educationsReq = new GetAllEducationsRequestDto(req.body);
-            const educations = await this.educationServ.getAllEducations(educationsReq);
-            return jsonResponse(req, res, traceId, { educations: educations }, null);
+            const educationsReq = new GetAllEducationsRequestDto({
+                limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
+                offset: req.query.offset ? parseInt(req.query.offset as string) : undefined,
+                orderBy: req.query.orderBy && typeof req.query.orderBy === 'string' ? {
+                    field: req.query.orderBy as keyof Education,
+                    direction: (req.query.orderDirection as 'asc' | 'desc') || 'asc'
+                } : undefined
+            });
+            const data = await this.educationServ.getAllEducations(educationsReq);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -85,8 +92,8 @@ export class EducationController implements IEducationController {
 
             const educationId = parseInt(req.params.id);
             const updateEducationReq = new UpdateEducationByIdRequestDto({ id: educationId, education: req.body });
-            const education = await this.educationServ.updateEducationById(updateEducationReq, actionUserId);
-            return jsonResponse(req, res, traceId, { education: education }, null);
+            const data = await this.educationServ.updateEducationById(updateEducationReq, actionUserId);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }

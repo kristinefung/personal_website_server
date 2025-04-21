@@ -107,7 +107,13 @@ export class UserService implements IUserService {
         // Step 0: Data validation
         let validatedReq = req.validate();
 
-        // Step 1: Delete user from database
+        // Step 1: Get user from database
+        const user = await this.userRepo.getUserById(validatedReq.id);
+        if (!user) {
+            throw new ApiError("User not existed", ApiStatusCode.INVALID_ARGUMENT, 400);
+        }
+
+        // Step 2: Delete user from database
         await this.userRepo.deleteUserById(validatedReq.id);
 
         return new DeleteUserResponseDto({
@@ -119,7 +125,13 @@ export class UserService implements IUserService {
         // Step 0: Data validation
         let validatedReq = req.validate();
 
-        // Step 1: Update user into database
+        // Step 1: Get user from database
+        const user = await this.userRepo.getUserById(validatedReq.id);
+        if (!user) {
+            throw new ApiError("User not existed", ApiStatusCode.INVALID_ARGUMENT, 400);
+        }
+
+        // Step 2: Update user into database
         const userRes = await this.userRepo.updateUserById(
             validatedReq.id,
             { ...validatedReq.user, updatedBy: actionUserId });

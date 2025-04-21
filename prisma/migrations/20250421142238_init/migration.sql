@@ -7,11 +7,12 @@ CREATE TABLE `User` (
     `passwordSalt` VARCHAR(191) NOT NULL,
     `roleId` ENUM('ADMIN', 'USER', 'DEMO', 'SYSTEM') NOT NULL,
     `statusId` ENUM('ACTIVE', 'UNVERIFIED', 'PENDING', 'SUSPENDED', 'BANNED', 'LOCKED', 'DELETED') NOT NULL,
+    `lockedExpiredAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdBy` INTEGER NOT NULL DEFAULT 0,
     `updatedAt` DATETIME(3) NULL,
     `updatedBy` INTEGER NULL,
-    `deleted` TINYINT NOT NULL DEFAULT 0,
+    `deleted` BOOLEAN NULL DEFAULT false,
 
     UNIQUE INDEX `email_UNIQUE`(`email`),
     PRIMARY KEY (`id`)
@@ -31,7 +32,7 @@ CREATE TABLE `UserLoginLog` (
     `createdBy` INTEGER NOT NULL DEFAULT 0,
     `updatedAt` DATETIME(3) NULL,
     `updatedBy` INTEGER NULL,
-    `deleted` TINYINT NOT NULL DEFAULT 0,
+    `deleted` BOOLEAN NULL DEFAULT false,
 
     UNIQUE INDEX `sessionToken_UNIQUE`(`sessionToken`),
     PRIMARY KEY (`id`)
@@ -50,7 +51,7 @@ CREATE TABLE `Enquiry` (
     `createdBy` INTEGER NOT NULL DEFAULT 0,
     `updatedAt` DATETIME(3) NULL,
     `updatedBy` INTEGER NULL,
-    `deleted` TINYINT NOT NULL DEFAULT 0,
+    `deleted` BOOLEAN NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -66,12 +67,12 @@ CREATE TABLE `Education` (
     `startYear` INTEGER NOT NULL,
     `endMonth` INTEGER NULL,
     `endYear` INTEGER NULL,
-    `isCurrent` TINYINT NOT NULL,
+    `isCurrent` BOOLEAN NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdBy` INTEGER NOT NULL DEFAULT 0,
-    `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedBy` INTEGER NOT NULL DEFAULT 0,
-    `deleted` TINYINT NOT NULL DEFAULT 0,
+    `updatedAt` DATETIME(3) NULL,
+    `updatedBy` INTEGER NULL,
+    `deleted` BOOLEAN NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -86,12 +87,12 @@ CREATE TABLE `Work` (
     `startYear` INTEGER NOT NULL,
     `endMonth` INTEGER NULL,
     `endYear` INTEGER NULL,
-    `isCurrent` TINYINT NOT NULL,
+    `isCurrent` BOOLEAN NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `createdBy` INTEGER NOT NULL DEFAULT 0,
     `updatedAt` DATETIME(3) NULL,
     `updatedBy` INTEGER NULL,
-    `deleted` TINYINT NOT NULL DEFAULT 0,
+    `deleted` BOOLEAN NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -121,7 +122,7 @@ ALTER TABLE `Enquiry` ADD CONSTRAINT `Enquiry_updatedBy_fkey` FOREIGN KEY (`upda
 ALTER TABLE `Education` ADD CONSTRAINT `Education_createdBy_fkey` FOREIGN KEY (`createdBy`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Education` ADD CONSTRAINT `Education_updatedBy_fkey` FOREIGN KEY (`updatedBy`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Education` ADD CONSTRAINT `Education_updatedBy_fkey` FOREIGN KEY (`updatedBy`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Work` ADD CONSTRAINT `Work_createdBy_fkey` FOREIGN KEY (`createdBy`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

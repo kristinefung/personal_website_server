@@ -15,9 +15,15 @@ type WorkResponse = {
 
 // Create Work
 const CreateWorkRequestSchema = z.object({
-    title: z.string(),
-    companyName: z.string(),
-    description: z.string(),
+    title: z.string({ required_error: "title is required" })
+        .min(1, "title is required")
+        .max(50, "title must be less than 50 characters"),
+    companyName: z.string({ required_error: "companyName is required" })
+        .min(1, "companyName is required")
+        .max(50, "companyName must be less than 50 characters"),
+    description: z.string({ required_error: "description is required" })
+        .min(1, "description is required")
+        .max(500, "description must be less than 500 characters"),
     startMonth: z.number().min(1).max(12),
     startYear: z.number().min(1900).max(new Date().getFullYear()),
     endMonth: z.number().min(1).max(12).optional(),
@@ -94,8 +100,8 @@ const GetAllWorksRequestSchema = z.object({
     limit: z.number().optional(),
     offset: z.number().optional(),
     orderBy: z.object({
-        field: z.enum(['id', 'title', 'companyName', 'startYear', 'startMonth', 'endYear', 'endMonth', 'isCurrent']),
-        direction: z.enum(['asc', 'desc'])
+        field: z.enum(['id', 'title', 'companyName', 'startYear', 'startMonth', 'endYear', 'endMonth', 'isCurrent']).optional(),
+        direction: z.enum(['asc', 'desc']).optional()
     }).optional()
 });
 

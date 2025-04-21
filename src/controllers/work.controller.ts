@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { WorkService } from 'src/services/work.service';
 import { AuthService } from 'src/services/auth.service';
 import { jsonResponse } from 'src/utils/jsonResponse';
-import { UserRole } from '@prisma/client';
+import { UserRole, Work } from '@prisma/client';
 import { CreateWorkRequestDto, GetWorkByIdRequestDto, GetAllWorksRequestDto, DeleteWorkRequestDto, UpdateWorkByIdRequestDto } from 'src/dtos/work.dto';
 
 export interface IWorkController {
@@ -27,10 +27,10 @@ export class WorkController implements IWorkController {
 
             // Step 1: Call service to handle business logic
             const workReq = new CreateWorkRequestDto(req.body);
-            const createdWork = await this.workServ.createWork(workReq, actionUserId);
+            const data = await this.workServ.createWork(workReq, actionUserId);
 
             // Step 2: return success response
-            return jsonResponse(req, res, traceId, { work: createdWork }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -43,10 +43,10 @@ export class WorkController implements IWorkController {
             // Step 1: Call service to handle business logic
             const workId = parseInt(req.params.id);
             const workReq = new GetWorkByIdRequestDto({ id: workId });
-            const work = await this.workServ.getWorkById(workReq);
+            const data = await this.workServ.getWorkById(workReq);
 
             // Step 2: return success response
-            return jsonResponse(req, res, traceId, { work: work }, null);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -55,10 +55,17 @@ export class WorkController implements IWorkController {
     async getAllWorks(req: Request, res: Response) {
         const traceId = uuidv4();
         try {
-
-            const worksReq = new GetAllWorksRequestDto(req.body);
-            const works = await this.workServ.getAllWorks(worksReq);
-            return jsonResponse(req, res, traceId, { works: works }, null);
+            // Step 1: Create get all enquiries request DTO
+            const worksReq = new GetAllWorksRequestDto({
+                limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
+                offset: req.query.offset ? parseInt(req.query.offset as string) : undefined,
+                orderBy: req.query.orderBy && typeof req.query.orderBy === 'string' ? {
+                    field: req.query.orderBy as keyof Work,
+                    direction: (req.query.orderDirection as 'asc' | 'desc') || 'asc'
+                } : undefined
+            });
+            const data = await this.workServ.getAllWorks(worksReq);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }
@@ -85,8 +92,8 @@ export class WorkController implements IWorkController {
 
             const workId = parseInt(req.params.id);
             const updateWorkReq = new UpdateWorkByIdRequestDto({ id: workId, work: req.body });
-            const work = await this.workServ.updateWorkById(updateWorkReq, actionUserId);
-            return jsonResponse(req, res, traceId, { work: work }, null);
+            const data = await this.workServ.updateWorkById(updateWorkReq, actionUserId);
+            return jsonResponse(req, res, traceId, data, null);
         } catch (err) {
             return jsonResponse(req, res, traceId, {}, err);
         }

@@ -99,7 +99,13 @@ export class EducationService implements IEducationService {
         // Step 0: Data validation
         let validatedReq = req.validate();
 
-        // Step 1: Delete education from database
+        // Step 1: Check if education exists
+        const existingEducation = await this.educationRepo.getEducationById(validatedReq.id);
+        if (!existingEducation) {
+            throw new ApiError("Education not found", ApiStatusCode.INVALID_ARGUMENT, 404);
+        }
+
+        // Step 2: Delete education from database
         await this.educationRepo.deleteEducationById(validatedReq.id);
 
         return new DeleteEducationResponseDto({
